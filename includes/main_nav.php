@@ -25,6 +25,9 @@ if ($_SESSION['teacher'] == TRUE) {
 if (isset($_SESSION['logged'])) {
     if ($_SESSION['logged'] == TRUE) {
         echo '
+            <li>
+                <a href="report.php">Report Issue</a>
+            </li>
             <li class="has-dropdown">
                 <a href="#">Student</a>
                 <ul class="dropdown">
