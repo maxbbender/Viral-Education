@@ -3,9 +3,9 @@
  *  Connects to Database
  */
 define("HOST", "localhost"); //Host to connect to
-define("USER", "sec_user"); //The database username
-define("PASSWORD", "4KZcqP9HRapF9aDT"); //Database Password
-define("DATABASE", "talos"); //Database
+define("USER", "root"); //The database username
+define("PASSWORD", "s?GuDvEJnz=2,q"); //Database Password
+define("DATABASE", "viral_education"); //Database
 
 define("CAN_REGISTER", "any");
 define("DEFAULT_ROLE", "member");

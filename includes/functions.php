@@ -445,8 +445,8 @@ function checkTextOwner($textID, $userID, $mysqli){
     if($stmt = $mysqli->prepare($query)){
         $stmt->bind_param("i", $textID);
         $stmt->execute();
-        $stmt->bind_results($creatorID);
-        $stmt->store_results();
+        $stmt->bind_result($creatorID);
+        $stmt->store_result();
 
         if($stmt->num_rows > 0){
             $stmt->fetch();
@@ -471,8 +471,8 @@ function getTextInfo($textID, $mysqli){
     if($stmt = $mysqli->prepare($query)){
         $stmt->bind_param("i", $textID);
         $stmt->execute();
-        $stmt->bind_results($title, $content);
-        $stmt->store_results();
+        $stmt->bind_result($title, $content);
+        $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
             $stmt->fetch();
@@ -488,3 +488,44 @@ function getTextInfo($textID, $mysqli){
     }
 }
 
+function createOA($title, $desc, $classID, $mysqli){
+    $query = '
+        INSERT INTO open_assignment
+        (oa_teacherID, oa_classID, oa_title, oa_description, oa_timeSubmitted)
+        VALUES (?, ?, ?, ?, ?)
+    ';
+    $now = time();
+    $teacherID = $_SESSION['user_id'];
+    if($stmt = $mysqli->prepare($query)){
+        $stmt->bind_param("iissi", $teacherID, $classID, $title, $desc, $now);
+        $stmt->execute();
+        if ($stmt->error() == ""){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+}
+
+function getClassName($class_id, $mysqli){
+    $class_name = "";
+    $query = '
+        SELECT class_name
+        FROM classes
+        WHERE id = ?
+    ';
+    if ($stmt = $mysqli->prepare($query)){
+        $stmt->bind_param("i", $class_id);
+        $stmt->execute();
+        $stmt->bind_result($class_name);
+        $stmt->store_result();
+        if ($stmt->num_rows > 0){
+            $stmt->fetch();
+            return $class_name;
+        } else {
+            return "#NULL";
+        }
+    } else {
+        echo "#Query";
+    }
+}

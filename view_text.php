@@ -92,12 +92,24 @@ if (isset($_GET['textID'])) {
             s.modify('move', 'forward', 'character');
             var i = b + a;
             var c = i.toLowerCase();
+			//alert(c);
+			//var n = s.indexOf(' ');
+			c = c.split(" ")[0];
+			c = c.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+			//alert(c);
+			//c = c.replace(/\s+/g, '');
+			/*var s = window.getSelection();
+			
+			s = s.substring(0, s.indexOf('&nbsp;');
+			
+			var c = s.replace(/\s+/g, '');*/
+			//alert("yo");
             if (hasSpace(c)) {
                 DefineElement(c);
             } else {
                 document.getElementById("googleTranslate").innerHTML = "You can not select phrases";
                 document.getElementById("wordReferenceTranslate").innerHTML = "You can not select phrases";
-                alert(c);
+                //alert(c);
             }
         });
         function DefineElement(element) {
