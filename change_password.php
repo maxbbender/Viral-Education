@@ -1,11 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 7/30/14
- * Time: 3:07 PM
- */
 session_start();
+
 function change_password($password, $newPassword, $mysqli)
 {
     $user_id = $_SESSION['user_id'];

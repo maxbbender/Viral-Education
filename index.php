@@ -209,14 +209,6 @@ session_start();
     </div>
 
 </div>
-<!--<script type="text/javascript" src="js/vendor/jquery.js"></script>
-<script type="text/javascript" src="js/foundation/foundation.js"></script>
-<script type="text/javascript" src="js/sha512.js"></script>
-<script type="text/javascript" src="js/foundation/foundation.abide.js"></script>
-<script src="js/foundation/foundation.equalizer.js"></script>
-<script>
-   $(document).foundation();
-</script>-->
 <?php include_once 'includes/javascript_basic.php'; ?>
 </body>
 </html>

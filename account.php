@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 7/28/14
- * Time: 4:13 PM
- */
 session_start();
 include_once 'includes/db_connect.php';
 if ($_SESSION['logged'] == TRUE) {
@@ -20,8 +14,11 @@ if ($_SESSION['logged'] == TRUE) {
         $stmt->bind_result($username, $email, $admin, $teacher, $fname, $lname, $phone);
         $stmt->fetch();
     }
+    
+    
     $bodyFill = "WAT";
     if ($_GET['edit'] == TRUE) {
+    	// Details var
         $details = '
             <div class="row text-center">
                 <h1>Edit Account Details</h1><hr>
