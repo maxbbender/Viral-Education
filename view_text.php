@@ -1,39 +1,39 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 8/5/14
- * Time: 5:23 PM
- */
-header("Access-Control-Allow-Origin: *");
-session_start();
+header ( "Access-Control-Allow-Origin: *" );
+session_start ();
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
 $class = 0;
-if (isset($_GET['textID'])) {
-    if (isset($_GET['class'])) {
-        $class = $_GET['class'];
-
-        //Records that student has read text
-        recordStudentRead($_GET['textID'], $_GET['class'], $_SESSION['user_id'], $mysqli);
-    }
-
-    $query = "
+/*
+ * For this we need the textID to load as well as the class
+ * in which we are loading this text for
+ */
+if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
+	if (isset ( $_GET ['class'] )) { // is the class set in the HTTP GET header
+		$class = $_GET ['class'];
+		
+		// Records that student has read text
+		recordStudentRead ( $_GET ['textID'], $_GET ['class'], $_SESSION ['user_id'], $mysqli );
+	}
+	
+	// Get the content/title of the text
+	$query = "
         SELECT title, content
         FROM texts
         WHERE id = ?
     ";
-    if ($stmt = $mysqli->prepare($query)) {
-        $stmt->bind_param("i", $_GET['textID']);
-        $stmt->execute();
-        $stmt->bind_result($title, $content);
-        $stmt->store_result();
-
-        if ($stmt->num_rows > 0) {
-            $stmt->fetch();
-            $content = '
+	if ($stmt = $mysqli->prepare ( $query )) {
+		$stmt->bind_param ( "i", $_GET ['textID'] );
+		$stmt->execute ();
+		$stmt->bind_result ( $title, $content );
+		$stmt->store_result ();
+		
+		// if the text has returned rows
+		if ($stmt->num_rows > 0) {
+			$stmt->fetch ();
+			$content = '
                 <div class="row text-center">
-                    <h2> ' . html_entity_decode($title) . '</h2>
+                    <h2> ' . html_entity_decode ( $title ) . '</h2>
                 </div><hr>
                 <div class="row">
                     <div id="content" style="height:600px; overflow:scroll;" class="small-8 columns panel">
@@ -64,18 +64,18 @@ if (isset($_GET['textID'])) {
                     </div>
                 </div>
             ';
-        }
-    }
+		}
+	}
 }
 ?>
 <html>
 <head>
-    <title>View Text - <?php echo $title; ?></title>
-    <!-- <meta charset="UTF-8"> -->
+<title>View Text - <?php echo $title; ?></title>
+<!-- <meta charset="UTF-8"> -->
     <?php include_once 'includes/css_links.php'; ?>
 </head>
 <body>
-<?php include_once 'includes/main_nav.php'; ?>
+<?php include_once 'includes/main_nav.php'; ?> 
 <div class="row">
     <?php echo $content; ?>
 </div>
@@ -83,35 +83,34 @@ if (isset($_GET['textID'])) {
 <script>
     $( document).ready(function(){
         $(content).click(function () {
-            var s = window.getSelection();
-            s.modify('extend', 'backward', 'word');
-            var b = s.toString();
+            var wordClicked = window.getSelection();
+            wordClicked.modify('extend', 'backward', 'word');
 
-            s.modify('extend', 'forward', 'word');
-            var a = s.toString();
+            // This is testing for "phrases" and removing words to the right and left
+            // of the word
+            var wordClickedModified1 = wordClicked.toString();
+
+            wordClicked.modify('extend', 'forward', 'word');
+
+			/* testing for "phrases" to the left of the word */
+            var wordClickedModified1 = s.toString();
             s.modify('move', 'forward', 'character');
-            var i = b + a;
-            var c = i.toLowerCase();
-			//alert(c);
-			//var n = s.indexOf(' ');
-			c = c.split(" ")[0];
-			c = c.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
-			//alert(c);
-			//c = c.replace(/\s+/g, '');
-			/*var s = window.getSelection();
+            var i = wordClickedModified2 + wordClickedModified1;
+            var wordFinal = i.toLowerCase();
+			wordFinal = wordFinal.split(" ")[0];
+			wordFinal = wordFinal.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 			
-			s = s.substring(0, s.indexOf('&nbsp;');
-			
-			var c = s.replace(/\s+/g, '');*/
-			//alert("yo");
-            if (hasSpace(c)) {
-                DefineElement(c);
+            if (hasSpace(wordFinal)) {
+                DefineElement(wordFinal);
             } else {
                 document.getElementById("googleTranslate").innerHTML = "You can not select phrases";
                 document.getElementById("wordReferenceTranslate").innerHTML = "You can not select phrases";
-                //alert(c);
             }
         });
+
+        /* Defines the element from all translation engines. This is where we do 
+         * all the API requests with "element" as the word to define.
+         */
         function DefineElement(element) {
             var cleanedElement = element.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
             //Google Translate
@@ -184,6 +183,7 @@ if (isset($_GET['textID'])) {
 
                         });
 
+                	// post the word searched to our databases
                     $.ajax({
                         type: "POST",
                         url: "read_text.php",
@@ -196,14 +196,20 @@ if (isset($_GET['textID'])) {
                 }
             });
         }
+
+        // Does var "s" have a space in it?
         function hasSpace(s) {
             return s.indexOf(' ') === -1;
         }
+
+        // Is this a verb?
         function typeCheck(s){
             if (s.indexOf("v") >= 0){
                 return 'Verb';
             }
         }
+
+        // What tense?
         function verbCheck(s){
             var tense = typeCheck(data.term0.PrincipalTranslations[inc].OriginalTerm['POS']);
             if (tense == 'Verb'){
