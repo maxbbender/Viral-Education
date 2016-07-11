@@ -4,8 +4,11 @@
  *
  * @Author: Max Bender
  */
-session_start();
-echo '
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+/*echo '
 	<nav class="top-bar" data-topbar>
 		<ul class="title-area">
 			<li class="name">
@@ -18,10 +21,43 @@ echo '
 		<ul class="right">';
 			//<li class=""><a href="#">How it Works</a></li>
 			//<li class=""><a href="#">About Us</a></li>
-   // ';
-if ($_SESSION['teacher'] == TRUE) {
-    echo '<li class=""><a href="panel.php">Teacher Panel</a></li>';
-}
+   // ';*/
+?>
+<div class="top-bar">
+	<div class="top-bar-left">
+		<ul class="dropdown menu" data-dropdown-menu>
+			<li class="menu-text">Viral Education</li>
+		</ul>
+	</div>
+	<div class="top-bar-right">
+		<ul class="menu">
+		<?php 
+			if(isset($_SESSION['logged'])) {
+				if(!$_SESSION['logged'] == TRUE) {
+
+			
+				} else {
+		
+			echo '<li class=""><a href="login.php">Logiiiiin</a></li>
+            <li class=""><a href="register.php">Register</a></li>';
+				}
+			} else {
+				echo '
+					<li class=""><a href="login.php">Login</a></li>
+					<li class=""><a href="register.php">Register</a></li>
+				';
+			}
+		?>
+		</ul>
+	</div>
+</div>
+<?php 
+  /* if (isset($_SESSION['teacher'])) {
+	   	if ($_SESSION['teacher'] == TRUE) {
+	   		echo '<li class=""><a href="panel.php">Teacher Panel</a></li>';
+	   	}
+   }
+
 if (isset($_SESSION['logged'])) {
     if ($_SESSION['logged'] == TRUE) {
         echo '
@@ -63,5 +99,5 @@ if (isset($_SESSION['logged'])) {
 echo '
     	</ul>
     </nav>';
-
+*/
 ?>

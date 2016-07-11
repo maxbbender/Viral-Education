@@ -5,6 +5,11 @@
  * @Author: Max Bender
  */
 session_start();
+if (file_exists('includes/db_connect.php')) {
+	require 'includes/db_connect.php';
+} else {
+	echo "Can't find file";
+}
 
 ?>
 <html>
@@ -20,12 +25,44 @@ session_start();
 
 <?php include_once 'includes/main_nav.php'; ?>
 
+
+<?php if (isset($_GET['error'])) {?>
+<div class="row">
+		<span><?php if ($_GET['error'] == 5) {
+			echo 'Password is incorrect, please try again';
+			
+		}?></span>
+	</div>
+</div>
+<?php }?>
 <!-- Login Form -->
 <div class="row">
-    <div class="small-6 columns small-centered">
+	<div class="login-page">
+	  <div class="form">
+	  	<div class="login-title"><h3>Login Form</h3></div>
+	    <form class="register-form">
+	      <input type="text" placeholder="name"/>
+	      <input type="password" placeholder="password"/>
+	      <input type="text" placeholder="email address"/>
+	      <button>create</button>
+	      <p class="message">Already registered? <a href="#">Sign In</a></p>
+	    </form>
+	    <form class="login-form">
+	      <input type="text" placeholder="username"/>
+	      <input type="password" placeholder="password"/>
+	      <button>login</button>
+	      <p class="message">Not registered? <a href="#">Create an account</a></p>
+	    </form>
+	  </div>
+	</div>
+	<!--<div class="small-6 columns small-centered">
         <form action="includes/process_login.php" id="login_form" method="POST" data-abide>
             <fieldset>
-                <legend>Login</legend>
+                <legend>
+                	<div class="row">
+                		<div class="<h3>Login - Viral Education</h3>
+                	</div>
+                </legend>
                 <div class="row">
                     <div class="small-4 columns">
                         <label for="username" class="right inline">Username: </label>
@@ -56,14 +93,14 @@ session_start();
             </div>
         </form>
     </div>
-</div>
+</div> -->
 
-<!-- Register Link -->
+<!-- Register Link
 <div class="row">
     <div class="small-4 columns small-centered">
         <a href="register.php" class="text-center">Don't have an account? Register Here!</a>
     </div>
-</div>
+</div>-->
 <script type="text/javascript" src="js/vendor/jquery.js"></script>
 <script type="text/javascript" src="js/foundation/foundation.js"></script>
 <script type="text/javascript" src="js/sha512.js"></script>

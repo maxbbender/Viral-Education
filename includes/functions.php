@@ -529,3 +529,28 @@ function getClassName($class_id, $mysqli){
         echo "#Query";
     }
 }
+
+function isAdmin($userID, $mysqli) {
+	$query = '
+		SELECT admin 
+		FROM members
+		WHERE id = ?
+	';
+	
+	if ($stmt = $mysqli->prepare($query)){
+	        $stmt->bind_param("i", $userID);
+	        $stmt->execute();
+	        $stmt->bind_result($admin);
+	        $stmt->store_result();
+	        if ($stmt->num_rows > 0){
+	            $stmt->fetch();
+	            if ($admin == 1) {
+	            	return true;
+	            }  else {
+	            	return false;
+	        	}
+	        }
+    } else {
+        echo "Query Error";
+    }
+}

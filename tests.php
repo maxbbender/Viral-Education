@@ -23,7 +23,7 @@
 	<button onclick="go()">Go</button>
 	<br><br>
 	Translated<br>
-	<div id="trans">FSFSF</div>
+	<div id="trans"><?php include_once 'includes/db_connect.php';?></div>
 	
 </body>
 </html>
