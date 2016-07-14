@@ -19,6 +19,7 @@ sudo apt-get install -y mysql-server
 
 # Installing PHP and it's dependencies
 sudo apt-get -y install php5 libapache2-mod-php5 php5-mcrypt
+sudo apt-get -y install php5-mysqlnd
 
 # Set up apache2 root directory to be our vagrant folder
 sudo rm /etc/apache2/apache2.conf
