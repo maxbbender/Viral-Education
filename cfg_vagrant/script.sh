@@ -7,6 +7,7 @@ sudo apt-get -y upgrade
 
 # Install Apache
 sudo apt-get -y install apache2
+sudo apt-get install php5-mysqlnd
 
 # Allow ports in for Apache
 sudo ufw allow in "Apache Full"
@@ -35,3 +36,4 @@ sudo service apache2 restart
 
 # init database
 mysql -u root -pdomislove < /vagrant/20141111_000001.db
+
