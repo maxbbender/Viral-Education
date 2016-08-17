@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
   
 	# Vagrant public network setup
 	config.vm.network "public_network"
-	config.vm.network "public_network", ip: "192.168.1.189"
+	config.vm.network "public_network", ip: "192.168.1.191"
 
 	# Lamp Config
 	config.vm.define "lamp" do|lamp|
