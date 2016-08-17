@@ -25,7 +25,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $_GET ['textID'] );
 		$stmt->execute ();
-		$stmt->bind_result ( $title, $content );
+		$stmt->bind_result ( $title, $content);
 		$stmt->store_result ();
 		
 		// if the text has returned rows
@@ -57,6 +57,16 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                     <a href="#" data-options="align:right;is_hover:true" data-dropdown="wordReferenceUsage" class="button small">See Usages</a>
                                     <ul id="wordReferenceUsage" data-dropdown-content class="medium f-dropdown" aria-hidden="true" tabindex="-1">
                                         <li>No Word Selected/No Available Usage</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+						<div class="row panel callout">
+                            <h3 class="subheader">Word Review</h3>
+                            <br>
+                            <div class="row">
+                                <div class="large-12 columns">
+                                    <a href="flashcards.php?textID=' .  $_GET['textID'] . '&class=' . $_GET['class'] . '" data-options="align:right;" class="button small">Review Cards</a>   
                                     </ul>
                                 </div>
                             </div>
