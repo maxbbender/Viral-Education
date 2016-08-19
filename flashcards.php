@@ -16,16 +16,17 @@ include_once 'includes/functions.php';
 $wordArray = array (
 		array () 
 );
+
 $inc = 0;
 if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                   // Get the flash card words
 	$query = "
         SELECT stats_text.word, stats_text.defined, stats_text.text_id
         FROM stats_text
-        WHERE stats_text.text_id = ? AND stats_text.reader_id = ?
+        WHERE stats_text.text_id = 24 AND stats_text.reader_id = 43
     ";
 	if ($stmt = $mysqli->prepare ( $query )) {
-		$stmt->bind_param ( "ii", $_GET ['textID'], $_SESSION ['user_id'] );
+		//$stmt->bind_param ( "ii", $_GET ['textID'], $_SESSION ['user_id'] );
 		$stmt->execute ();
 		$stmt->bind_result ( $word, $define, $textID );
 		$stmt->store_result ();
@@ -44,9 +45,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	}
 }
 
-// $words=populateCard ($_GET ['textID'], $_GET ['class'], $_SESSION ['user_id'], $mysqli);
-// $test= " " . $_SESSION ['userID'];
-// $noteCardIndex=0;
+
 
 ?>
 <html>
@@ -205,31 +204,44 @@ z-index
 		<div class="vertical flip-container"
 			ontouchstart="this.classList.toggle('hover');">
 			<div class="flipper">
-    	<?php
+    	<?php		
+		
 					$numWords = count ( $wordArray );
 					$count = 0;
 					echo 'got here';
 					if ($numWords > 0) {
 						echo 'got there';
+						
 						foreach ( $wordArray as $innerArray ) {
+							
 							echo '
  					<div class="front" id = "flashcard' . $count . '">
  						Front Side
+						
  						' . $innerArray [0] . ' </div>';
+						
+						
+							echo '
+					<div class="back" id = "flashcard' . $count . '">
+ 						Back Side
+ 						' . $innerArray [1] . ' </div>';
 							$count ++;
+							$inc ++;
 						}
 					} else {
 						error_log ( "Dom" );
 					}
 					
+					
 					?>
+		
 		
 
 		
     </div>
 		</div>
 		<div class="large-12 columns">
-			<a value=--$a class="button small">Previous Word</a> <a value=++$a
+			<a value=--$inc class="button small">Previous Word</a> <a value=++$inc
 				class="button small">Next Word</a>
 
 		</div>
