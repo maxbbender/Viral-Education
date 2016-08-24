@@ -234,6 +234,7 @@ img {
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
   background-position:50% 50%;
 }
+
 .card .back {
      background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
     -webkit-transform: rotateY( 180deg );
@@ -248,14 +249,6 @@ img {
     -o-transform: rotateY( 180deg );
     transform: rotateY( 180deg );
 }
-
-
-
-
-
-
-
-
 </style>
 <link href='http://fonts.googleapis.com/css?family=Questrial'
 	rel='stylesheet' type='text/css'>
@@ -268,31 +261,25 @@ img {
 	<!-- Navigation Bar -->
 <?php include_once 'includes/main_nav.php'; ?>
 <br>
-<center>
     <div class="row">
-
-		<!-- dive for the card -->
-	<div class="container ">
+    	<div class="small-5 columns small-centered text-center">
+    		<div class="container ">
 			<div class="card" >
-    	<?php		
-		
+    			<?php		
 					$numWords = count ( $wordArray );
 					$count = 0;
 					
 					if ($numWords > 0) {
-					
-						
 						foreach ( $wordArray as $innerArray ) {
-							
 							echo '
- 					<div class="front hidden" id = "flashcardf' . $count . '" >
+ 				<div class="front hidden" id = "flashcardf' . $count . '" >
  						Front Side
 						
  						' . $innerArray [0] . ' </div>';
 						
 						
 							echo '
-					<div class="back hidden" id = "flashcardb' . $count . '">
+				<div class="back hidden" id = "flashcardb' . $count . '">
  						Back Side
  						' . $innerArray [1] . ' </div>';
 							$count ++;
@@ -302,32 +289,19 @@ img {
 						error_log ( "Dom" );
 					}
 					
-					
 					?>
-		
-		
-
-		
-    </div>
+    		</div>
+		</div>	
+    	</div>
 	</div>	
 	<br>
 	<br>
-		<div class="large-12 columns">
+	<div class="row">
+		<div class="small-12 columns text-center">
 			<a id=pre_button class="button small">Previous Word</a> 
 			<a id=flip_button class="button small" >Flip Card</a>
 			<a id=next_button class="button small">Next Word</a>
-
 		</div>
-
-	</div>
-</center>
-	</div>
-
-
-	</div>
-
-	</div>
-
 	</div>
 
 <?php include_once 'includes/javascript_basic.php'; ?>
