@@ -61,6 +61,16 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                 </div>
                             </div>
                         </div>
+                        <div class="row picSlider">
+                        	
+                			<div><img src="../img/student128.png"></div>
+                        	<div><img src="../img/student128.png"></div>
+                        	<div><img src="../img/student128.png"></div>
+                        	
+                        	
+                        </div>
+                       	<div class="row" id="picSliderButtons">
+                        </div>
                     </div>
                 </div>
             ';
@@ -73,6 +83,12 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <title>View Text - <?php echo $title; ?></title>
 <!-- <meta charset="UTF-8"> -->
     <?php include_once 'includes/css_links.php'; ?>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
+    <style>
+    	.slick-slide {
+    		max-height : 200px;
+    	}
+    </style>
 </head>
 <body>
 <?php include_once 'includes/main_nav.php'; ?> 
@@ -80,23 +96,33 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     <?php echo $content; ?>
 </div>
 <?php include_once 'includes/javascript_basic.php'; ?>
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 <script>
     $( document).ready(function(){
+    	var imageSearchApiKey ="AIzaSyD75qLbuILR5M-RlF4FHgjKg2sQ2Yh8byg";
+		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
+		var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
+		var imageSearchFullURL = customSearchBaseURL + "&key=" + apiKey + "&cx=" + searchEngineID;
+		
+        $('.picSlider').slick({
+        	appendArrows : $('#picSliderButtons'),
+        	adaptiveHeight : true
+        });
         $(content).click(function () {
             var wordClicked = window.getSelection();
-            wordClicked.modify('extend', 'backward', 'word');
 
             // This is testing for "phrases" and removing words to the right and left
             // of the word
+            wordClicked.modify('extend', 'backward', 'word');
+            wordClicked.modify('extend', 'forward', 'word');
+            
             var wordClickedModified1 = wordClicked.toString();
 
-            wordClicked.modify('extend', 'forward', 'word');
-
-			/* testing for "phrases" to the left of the word */
-            var wordClickedModified1 = s.toString();
-            s.modify('move', 'forward', 'character');
-            var i = wordClickedModified2 + wordClickedModified1;
-            var wordFinal = i.toLowerCase();
+// 			/* testing for "phrases" to the left of the word */
+//             var wordClickedModified1 = s.toString();
+//             s.modify('move', 'forward', 'character');
+//             var i = wordClickedModified2 + wordClickedModified1;
+            var wordFinal = wordClicked.toString().toLowerCase();
 			wordFinal = wordFinal.split(" ")[0];
 			wordFinal = wordFinal.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
 			
@@ -178,7 +204,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                     }
                                 }
                             } catch(err){
-
+								
                             }
 
                         });

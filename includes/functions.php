@@ -529,3 +529,70 @@ function getClassName($class_id, $mysqli){
         echo "#Query";
     }
 }
+function insertPhotos($word, $context, $thumbnail, $mysqli) {
+	$query = '
+        INSERT INTO pics
+        (word, context_url, thumbnail_url)
+        VALUES (?, ?, ?)
+    ';
+	if($stmt = $mysqli->prepare($query)){
+		$stmt->bind_param("sss", $word, $context, $thumbnail);
+		$stmt->execute();
+		if ($stmt->error == ""){
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+}
+
+function getPhotos($word, $mysqli) {
+	$returnArray = array(array());
+	$inc = 0;
+	$query = '
+		SELECT context_url, thumbnail_url
+		FROM pics
+		WHERE word = ?	
+	';
+	
+	if ($stmt = $mysqli->prepare($query)){
+		$stmt->bind_param("s", $word);
+		$stmt->execute();
+		$stmt->bind_result($context, $thumbnail);
+		$stmt->store_result();
+		if ($stmt->num_rows > 0){
+			while($stmt->fetch()) {
+				$returnArray[$inc][0] = $context;
+				$returnArray[$inc][1] = $thumbnail;
+				$inc++;
+			}
+			return $returnArray;
+		} else {
+			return false;
+		}
+	} else {
+		echo "ERROR";
+	}
+}
+
+function alreadyHasPhotos($word, $mysqli) {
+	$query = '
+		SELECT pic_id
+		FROM pics
+		WHERE word = ?
+			';
+	if ($stmt = $mysqli->prepare($query)){
+		$stmt->bind_param("s", $word);
+		$stmt->execute();
+		$stmt->bind_result($picId);
+		$stmt->store_result();
+		if ($stmt->num_rows > 0){
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		echo "#Query";
+	}
+	
+}
