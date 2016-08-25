@@ -21,7 +21,7 @@ $inc = 0;
 if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                   // Get the flash card words
 	$query = "
-        SELECT stats_text.word, stats_text.defined, stats_text.text_id
+        SELECT DISTINCT stats_text.word, stats_text.defined, stats_text.text_id
         FROM stats_text
         WHERE stats_text.text_id = 24 AND stats_text.reader_id = 43
     ";
@@ -97,94 +97,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 img {
 	vertical-align: middle;
 	max-height: 128px;
-// }
-// /* entire container, keeps perspective */
-// .flip-container {
-	// perspective: 1000px;
-	// text-align: center;
-	// position: absolute;
-	// left: 50%;
-	// transform: translateX(-50%);
-// }
-
-// .flip-container, .front, .back {
-	// width: 480px;
-	// height: 288px;
-	// position: center;
-// }
-
-// /* flip speed goes here */
-// .flipper {
-	// transition: 0.6s;
-	// transform-style: preserve-3d;
-	// position: relative;
-// }
-
-// /* hide back of pane during swap */
-// .front, .back {
-	// position: absolute;
-	// top: 0;
-	// left: 0;
-	// backface-visibility: hidden;
-	// -webkit-backface-visibility: hidden;
-// }
-
-// /* front pane, placed above back */
-// .front {
-	// z-index: 1;
-	// background-image:
-		// url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
-// }
-
-// /* back, initially hidden pane */
-// .back {
-	// transform: rotateX(-180deg);
-	// background-image:
-		// url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
-	// animation: toFront 0.3s linear normal forwards;
-// }
-
-// .vertical.flip-container {
-	// position: relative;
-// }
-
-// .vertical.flip-container:hover .back {
-	// animation-delay: 0.3s;
-	// animation: toBack 0.3s linear normal forwards;
-// }
-
-// @
-// keyframes toBack { 0% {
-	// z-index: 0;
-// }
-
-// 100%
-// {
-// z-index
-// :
-// 1;
-// }
-// }
-// @
-// keyframes toFront { 0% {
-	// z-index: 1;
-// }
-
-// 100%
-// {
-// z-index
-// :
-// 0;
-// }
-// }
-// .vertical.flip-container .flipper {
-	// transform-origin: 100% 144px; /* half of height */
-// }
-
-// .vertical.flip-container:hover .flipper {
-	// transform: rotateX(-180deg);
-// }
-
+}
 
 
 
@@ -193,7 +106,6 @@ img {
 .container {
     width: 200px;
     height: 260px;
-    position: center;
     -webkit-perspective: 800px;
     -moz-perspective: 800px;
     -o-perspective: 800px;
@@ -201,9 +113,10 @@ img {
 	
 }
 .card {
+	
     width: 240%;
     height: 100%;
-    position: absolute;
+    
     -webkit-transition: -webkit-transform 1s;
     -moz-transition: -moz-transform 1s;
     -o-transition: -o-transform 1s;
@@ -215,7 +128,8 @@ img {
     -webkit-transform-origin: 50% 50%;
 }
 .card div {
-   
+    
+
     height: 100%;
     width: 100%;
     line-height: 260px;
@@ -232,7 +146,9 @@ img {
 }
 .card .front {
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
-  background-position:50% 50%;
+  
+
+  
 }
 
 .card .back {
@@ -241,7 +157,7 @@ img {
     -moz-transform: rotateY( 180deg );
     -o-transform: rotateY( 180deg );
     transform: rotateY( 180deg );
-	background-position:50% 50%;
+	
 }
 .card.flipped {
     -webkit-transform: rotateY( 180deg );
@@ -261,9 +177,11 @@ img {
 	<!-- Navigation Bar -->
 <?php include_once 'includes/main_nav.php'; ?>
 <br>
+
     <div class="row">
     	<div class="small-5 columns small-centered text-center">
     		<div class="container ">
+
 			<div class="card" >
     			<?php		
 					$numWords = count ( $wordArray );
@@ -297,21 +215,35 @@ img {
 	<br>
 	<br>
 	<div class="row">
+
 		<div class="small-12 columns text-center">
 			<a id=pre_button class="button small">Previous Word</a> 
 			<a id=flip_button class="button small" >Flip Card</a>
 			<a id=next_button class="button small">Next Word</a>
 		</div>
+
 	</div>
 
 <?php include_once 'includes/javascript_basic.php'; ?>
 
-<script>
+<script >
+
 	$(document).ready(function(){
+		
+			
 		var curCard = 0;
     $("#flashcardf0").show();
 	$("#flashcardb0").show();
 	$( "#pre_button" ).click(function() {
+		if ($('#pre_button').is('[disabled=disabled]')){
+			console.log('is next disabled'+$('#next_button').prop('disabled'));
+}
+		else{
+			
+			 $('#pre_button').attr("disabled", true);
+			 $('#next_button').attr("disabled", true);
+			 
+
 		$( "#flashcardb"+curCard).fadeOut( "slow", function() {
 			
 			
@@ -320,34 +252,71 @@ img {
 				curCard= <?php echo $numWords -1 ?>;
 				$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
 				$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+				$('#pre_button').attr("disabled", false);
+				$('#next_button').attr("disabled", false);
+				
 			}
 			else {
 			$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
 			$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+			$('#pre_button').attr("disabled", false);
+			$('#next_button').attr("disabled", false);
+			
 			}
   });
 		$( "#flashcardf"+curCard).fadeOut( "slow", function() {
     // Animation complete.
   });
-	});
+		}});
+	
+	
+	
+	
+	
+	
+	
 	$( "#next_button" ).click(function() {
+		if ($('#next_button').is('[disabled=disabled]')){
+			console.log('is next disabled'+$('#next_button').prop('disabled'));
+}
+		else{
+			if ($('.card').hasClass('flipped')){
+				$('.card').toggleClass('flipped');
+			}
+			
+			 $('#next_button').attr("disabled", true);
+			  $('#pre_button').attr("disabled", true);
+			  
+			
+			
+			
+		console.log('is next disabled'+$("#next_button").is(":disabled"));
 		$( "#flashcardb"+curCard).fadeOut( "slow", function() {
+			
+						
 			
 			curCard++;
 			if (curCard> <?php echo $numWords-1?>){ 
 				curCard= 0;
 				$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
 				$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+				 $('#next_button').attr("disabled", false);
+				  $('#pre_button').attr("disabled", false);
+				  	
+		
 			}
 			else {
 			$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
 			$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+			 $('#next_button').attr("disabled", false);
+			  $('#pre_button').attr("disabled", false);
+			  	
 			}
   });
 		$( "#flashcardf"+curCard).fadeOut( "slow", function() {
     // Animation complete.
   });
-	});
+	}});
 
 	$( "#flip_button" ).click(function() {
     $('.card').toggleClass('flipped');
