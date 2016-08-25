@@ -54,18 +54,11 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                     </div>
                     <div id="translate" class="small-4 columns">
                         <div class="row panel callout">
-                            <h3 class="subheader">Google Translate</h3>
-                            <span id="googleTranslate" class="">No Word Selected</span>
-                        </div>
-                        <div class="row panel callout">
-                            <h3 class="subheader">Word Reference</h3>
-                            <div class="row">
-                                <div class="large-12 columns">
-                                    <span id="wordReferenceTranslate" class="">No Word Selected</span>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
+                            <h3 class="subheader">Translations</h3>
+                            <span>Google Translate : </span><span id="googleTranslate" class="">No Word Selected</span><br><br>
+                        	<span>Word Reference : </span><span id="wordReferenceTranslate" class="">No Word Selected</span>
+                            <br><br>
+                      		<div class="row">
                                 <div class="large-12 columns">
                                     <a href="#" data-options="align:right;is_hover:true" data-dropdown="wordReferenceUsage" class="button small">See Usages</a>
                                     <ul id="wordReferenceUsage" data-dropdown-content class="medium f-dropdown" aria-hidden="true" tabindex="-1">
@@ -202,19 +195,11 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                             //Usages
                             $(wordReferenceUsage).empty();
                             var check = 1;
-                            try{
-                                while(check == 1){
-                                    $("<li><strong>" + data.original.Compounds[inc].OriginalTerm['term'] + ":</strong> " + data.original.Compounds[inc].FirstTranslation['term'] + "</li>").appendTo(wordReferenceUsage);
-                                    try {
-                                        var temp = data.original.Compounds[inc+1].OriginalTerm['term'];
-                                        inc++;
-                                    } catch (err){
-                                        check = 0;
-                                    }
-                                }
-                            } catch(err){
-								
-                            }
+                            var compounds = data.original.Compounds;
+
+							$.each(compounds, function() {
+								$("#wordReferenceUsage").append("<li><strong>" + this.OriginalTerm.term + " : </strong>" + this.FirstTranslation.term + "</li>");
+							});
 
                         });
 
