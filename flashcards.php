@@ -21,11 +21,11 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	$query = "
         SELECT DISTINCT stats_text.word, stats_text.defined, stats_text.text_id
         FROM stats_text
-        WHERE stats_text.text_id = 24 AND stats_text.reader_id = 43
+        WHERE stats_text.text_id = ? AND stats_text.reader_id = ?
     ";
 	
 	if ($stmt = $mysqli->prepare ( $query )) {
-		//$stmt->bind_param ( "ii", $_GET ['textID'], $_SESSION ['user_id'] );
+		$stmt->bind_param ( "ii", $_GET ['textID'], $_SESSION ['user_id'] );
 		$stmt->execute ();
 		$stmt->bind_result ( $word, $define, $textID );
 		$stmt->store_result ();
@@ -85,7 +85,9 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <head>
    
     <?php include_once 'includes/css_links.php'; ?>
-	<?php include 'css/app.css'; ?>
+
+<link href= 'css/app.css'
+	rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Questrial'
 	rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Luckiest+Guy'
@@ -97,7 +99,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	<!-- Navigation Bar -->
 <?php include_once 'includes/main_nav.php'; ?>
 <div class="row text-center">
-    <h1>Review Cards  - <?php echo $returnArray[0] ?></h1><hr>
+    <h1>Review Missed Words  - <?php echo $returnArray[0] ?></h1><hr>
     <?php if ($error != NULL) {
         echo $error;
     } ?>
@@ -164,7 +166,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 
 <?php include_once 'includes/javascript_basic.php'; ?>
 
-<script >
+<script>
 
 	$(document).ready(function(){
 		

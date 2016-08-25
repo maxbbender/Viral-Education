@@ -72,7 +72,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                             <br>
                             <div class="row">
                                 <div class="large-12 columns">
-                                    <a href="flashcards.php?textID=' .  $_GET['textID'] . '&class=' . $_GET['class'] . '" data-options="align:right;" class="button small">Review Cards</a>   
+                                    <a href="flashcards.php?textID=' .  $_GET['textID'] . '" data-options="align:right;" class="button small">Review Cards</a>   
                                     </ul>
                                 </div>
                             </div>
