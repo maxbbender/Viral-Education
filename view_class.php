@@ -57,10 +57,10 @@ if (isset($_GET['class_id'])) {
 		
 		//get assigned texts to be removed 
 		$assign .= '
-            <form action="assign_text.php" method="GET">
+            <form action="remove_text.php" method="GET">
                 <div class="row">
                     <div class="small-8 columns">
-                        <select name="textID">
+                        <select name="textID" id="del_select">
 
         ';
         foreach ($assigned_texts as $texts) {
@@ -73,7 +73,7 @@ if (isset($_GET['class_id'])) {
                         </select>
                     </div>
                     <div class="small-4 columns">
-                        <input type="submit" value="Remove Text" class="button radius tiny">
+                        <input type="submit" value="Remove Text" class="button radius tiny" id="remove_button">
                     </div>
                     <input type="hidden" name="classID" value="' . $_GET['class_id'] . '">
                 </div>
@@ -342,5 +342,20 @@ if (isset($_GET['class_id'])) {
     </div>
 </div>
 <?php include_once 'includes/javascript_basic.php'; ?>
+<script>
+
+var clickedInput;
+$(document).ready(function () {
+	$(function() {
+   $("#remove_button").click(function(){
+      if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+" Click Ok to confirm this action.")){
+         $('form#delete').submit();
+      }
+   });
+});
+});
+
+
+</script>
 </body>
 </html>
