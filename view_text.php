@@ -11,7 +11,6 @@ $class = 0;
 if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	if (isset ( $_GET ['class'] )) { // is the class set in the HTTP GET header
 		$class = $_GET ['class'];
-		
 		// Records that student has read text
 		recordStudentRead ( $_GET ['textID'], $_GET ['class'], $_SESSION ['user_id'], $mysqli );
 	}
@@ -22,6 +21,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         FROM texts
         WHERE id = ?
     ";
+	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $_GET ['textID'] );
 		$stmt->execute ();
@@ -35,8 +35,6 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 			$re = "/(<p[^>]*>)(.*)(<\\/p>)/";
 			preg_match_all($re, $content, $matches);
 			
-			$count = 1;
-			
 			for ($i = 0; $i <= count($matches[1]); $i++) {
 				$spannedWords = $spannedWords . $matches[1][$i];
 				$explodedContent = explode (" ", $matches[2][$i] );
@@ -45,8 +43,6 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 				}
 				$spannedWords = $spannedWords . $matches[3][$i];
 			}
-
-
 			
 			$data = '
                 <div class="row text-center">
@@ -286,7 +282,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         }
 
         function populatePhotos(word) {
-        	var imageSearchApiKey ="AIzaSyD75qLbuILR5M-RlF4FHgjKg2sQ2Yh8byg";
+        	var imageSearchApiKey ="AIzaSyAJgQycIa3vSLEuC48VND-ZhkOHfxBRcSM";
      		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
      	    var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
      		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
