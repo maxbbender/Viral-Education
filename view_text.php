@@ -31,13 +31,19 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 		// if the text has returned rows
 		if ($stmt->num_rows > 0) {
 			$stmt->fetch ();
-			$content = '
+			$explodedContent = explode(" ", $content);
+			$spannedWords = "";
+			foreach($explodedContent as $word) {
+				$spannedWords = $spannedWords . "<span class='clickable'>" . $word . " </span>";
+			}
+			
+			$data = '
                 <div class="row text-center">
                     <h2> ' . html_entity_decode ( $title ) . '</h2>
                 </div><hr>
                 <div class="row">
                     <div id="content" style="height:600px; overflow:scroll;" class="small-8 columns panel">
-                        ' . $content . '
+                      	' . $spannedWords . '
                     </div>
                     <div id="translate" class="small-4 columns">
                         <div class="row panel callout">
@@ -77,31 +83,21 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <body>
 <?php include_once 'includes/main_nav.php'; ?> 
 <div class="row">
-    <?php echo $content; ?>
+    <?php echo $data; ?>
 </div>
 <?php include_once 'includes/javascript_basic.php'; ?>
 <script>
-    $( document).ready(function(){
-        $(content).click(function () {
-            var wordClicked = window.getSelection();
-            wordClicked.modify('extend', 'backward', 'word');
+    $(document).ready( function(){
+        $(".clickable").click( function () {
+            var wordClicked = $(this).html();
 
-            // This is testing for "phrases" and removing words to the right and left
-            // of the word
-            var wordClickedModified1 = wordClicked.toString();
-
-            wordClicked.modify('extend', 'forward', 'word');
-
-			/* testing for "phrases" to the left of the word */
-            var wordClickedModified1 = s.toString();
-            s.modify('move', 'forward', 'character');
-            var i = wordClickedModified2 + wordClickedModified1;
-            var wordFinal = i.toLowerCase();
-			wordFinal = wordFinal.split(" ")[0];
-			wordFinal = wordFinal.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
+            // Clean word
+            wordClicked = checkForHTMLTags(wordClicked);
+			wordClicked = cleanWord(wordClicked);
+			wordClicked = wordClicked.toLowerCase();
 			
-            if (hasSpace(wordFinal)) {
-                DefineElement(wordFinal);
+			if (hasSpace(wordClicked)) {
+                DefineElement(wordClicked);
             } else {
                 document.getElementById("googleTranslate").innerHTML = "You can not select phrases";
                 document.getElementById("wordReferenceTranslate").innerHTML = "You can not select phrases";
@@ -216,6 +212,36 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                 return 'to ';
             }
         }
+
+        function checkForHTMLTags(stringToCheck) {
+		    var re = /<\w+>\s*(\w+)\s*<\/\w+>/; 
+		    var m;
+		     
+		    if ((m = re.exec(stringToCheck)) !== null) {
+		        if (m.index === re.lastIndex) {
+		            re.lastIndex++;
+		        }
+		        return m[1];
+		    } else {
+			    return stringToCheck;
+		    }
+        }
+
+        function cleanWord(stringToClean) {
+            var re = /\W*(\w+)\W*/; 
+            var m;
+             
+            if ((m = re.exec(stringToClean)) !== null) {
+                if (m.index === re.lastIndex) {
+                    re.lastIndex++;
+                }
+
+                return m[1];
+            } else {
+                return stringToClean;
+            }
+        }
+            
     });
 </script>
 </body>
