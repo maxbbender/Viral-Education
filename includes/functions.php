@@ -297,6 +297,34 @@ function getCollection($user_id, $mysqli)
     return $texts;
 }
 
+function getAssigned($class_id, $mysqli)
+{
+    $query = "
+    SELECT assigned_texts.text_id, texts.title
+    FROM assigned_texts
+    LEFT JOIN texts
+    ON assigned_texts.text_id = texts.id
+    WHERE assigned_texts.class_id = ?
+";
+    if ($stmt = $mysqli->prepare($query)) {
+            $stmt->bind_param("i", $_GET['class_id']);
+            $stmt->execute();
+            $stmt->bind_result($textID, $textTitle);
+            $stmt->store_result();
+			$texts= array();
+			$inc = 0;
+			  if ($stmt->num_rows > 0) {
+            while ($stmt->fetch()) {
+                $texts[$inc] = $textTitle . '#' . $textID;
+                $inc++;
+
+			}
+            }
+        }
+			
+    return $texts;
+}
+
 function addCollection($textID, $mysqli, $user_id)
 {
     $query = "

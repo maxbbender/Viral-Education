@@ -25,7 +25,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $_GET ['textID'] );
 		$stmt->execute ();
-		$stmt->bind_result ( $title, $content );
+		$stmt->bind_result ( $title, $content);
 		$stmt->store_result ();
 		
 		// if the text has returned rows
@@ -73,9 +73,19 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                         	<div><img src="../img/student128.png"></div>
                         	<div><img src="../img/student128.png"></div>
                         	
-                        	
                         </div>
                        	<div class="row" id="picSliderButtons">
+                      	</div>
+
+						<div class="row panel callout">
+                            <h3 class="subheader">Word Review</h3>
+                            <br>
+                            <div class="row">
+                                <div class="large-12 columns">
+                                    <a href="flashcards.php?textID=' .  $_GET['textID'] . '" data-options="align:right;" class="button small">Review Cards</a>   
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -110,7 +120,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 		var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
 		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
 		
-        $('.picSlider').slick({
+        $('.picSliderDiv').slick({
         	appendArrows : $('#picSliderButtons'),
         	adaptiveHeight : true
         });
@@ -133,7 +143,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
             $.ajax({
                 type: "GET",
                 url: "/helpers/getPhotos.php",
-                data: {word:wordFinal},
+                data: {word:wordClicked},
                 success: function (results) {
                     $('#picSliderDiv').empty();
                     $.each(results, function(index, value) {
@@ -143,12 +153,6 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                 }
             });
         });
-
-		
-
-
-
-
 
         /* Defines the element from all translation engines. This is where we do 
          * all the API requests with "element" as the word to define.
