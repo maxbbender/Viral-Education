@@ -2,8 +2,6 @@
 /**
  *  Project Talos - Learning Language Platform
  *
- *  User's will be able to upload texts and read them. This is the homepage where you
- *  have to login to view statistics, and see texts that are assigned to you
  *
  * @Author: Dom Rossillo
  * @Version: 1.0
@@ -25,6 +23,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         FROM stats_text
         WHERE stats_text.text_id = 24 AND stats_text.reader_id = 43
     ";
+	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		//$stmt->bind_param ( "ii", $_GET ['textID'], $_SESSION ['user_id'] );
 		$stmt->execute ();
@@ -43,6 +42,40 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	} else {
 		error_log ( "MySQL error : " > $mysqli->error );
 	}
+
+
+//get title of text used for flashcards
+	
+	$queryTitle = "
+        SELECT title, content
+        FROM texts
+        WHERE id = ?
+    ";
+		if($stmt = $mysqli->prepare($queryTitle)){
+			
+        $stmt->bind_param("i", $_GET['textID']);
+        $stmt->execute();
+        $stmt->bind_result($title, $content);
+        $stmt->store_result();
+		
+        if ($stmt->num_rows > 0) {
+			
+            $stmt->fetch();
+            $returnArray = array();
+            $returnArray[0] = $title;
+            $returnArray[1] = $content;
+			
+            
+			
+        } else {
+			
+            return FALSE;
+        }
+    } else {
+		
+        return FALSE;
+    }
+
 }
 
 
@@ -52,120 +85,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <head>
    
     <?php include_once 'includes/css_links.php'; ?>
-    <style>
-.hidden {
-	display: none;
-}
-
-#titleText {
-	font-family: 'Questrial', sans-serif;
-	text-align: center;
-	position: relative;
-	top: 10%
-}
-
-#main {
-	font-family: 'Open Sans', sans-serif;
-	font-size: 400%;
-}
-
-.sub {
-	font-family: 'Questrial', sans-serif;
-	font-size: 200%;
-}
-
-.sub2 {
-	font-family: 'Questrial', sans-serif;
-	font-size: 300%;
-}
-
-.quest {
-	font-family: 'Questrial', sans-serif;
-}
-
-#title {
-	height: 500px;
-	background-image: url('/img/green_dust_scratch.png');
-}
-
-.helper {
-	display: inline-block;
-	height: 100%;
-	vertical-align: middle;
-}
-
-img {
-	vertical-align: middle;
-	max-height: 128px;
-}
-
-
-
-/* ---------------------------------------------------------*/
-
-.container {
-    width: 200px;
-    height: 260px;
-    -webkit-perspective: 800px;
-    -moz-perspective: 800px;
-    -o-perspective: 800px;
-    perspective: 800px;
-	
-}
-.card {
-	
-    width: 240%;
-    height: 100%;
-    
-    -webkit-transition: -webkit-transform 1s;
-    -moz-transition: -moz-transform 1s;
-    -o-transition: -o-transform 1s;
-    transition: transform 1s;
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    -o-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-transform-origin: 50% 50%;
-}
-.card div {
-    
-
-    height: 100%;
-    width: 100%;
-    line-height: 260px;
-    color: black;
-    text-align: center;
-    font-weight: bold;
-    font-size: 30px;
-    position: absolute;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -o-backface-visibility: hidden;
-    backface-visibility: hidden;
-	
-}
-.card .front {
-  background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
-  
-
-  
-}
-
-.card .back {
-     background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
-    -webkit-transform: rotateY( 180deg );
-    -moz-transform: rotateY( 180deg );
-    -o-transform: rotateY( 180deg );
-    transform: rotateY( 180deg );
-	
-}
-.card.flipped {
-    -webkit-transform: rotateY( 180deg );
-    -moz-transform: rotateY( 180deg );
-    -o-transform: rotateY( 180deg );
-    transform: rotateY( 180deg );
-}
-</style>
+	<?php include 'css/app.css'; ?>
 <link href='http://fonts.googleapis.com/css?family=Questrial'
 	rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Luckiest+Guy'
@@ -176,6 +96,12 @@ img {
 <body>
 	<!-- Navigation Bar -->
 <?php include_once 'includes/main_nav.php'; ?>
+<div class="row text-center">
+    <h1>Review Cards  - <?php echo $returnArray[0] ?></h1><hr>
+    <?php if ($error != NULL) {
+        echo $error;
+    } ?>
+</div>
 <br>
 
     <div class="row">
@@ -191,18 +117,22 @@ img {
 						foreach ( $wordArray as $innerArray ) {
 							echo '
  				<div class="front hidden" id = "flashcardf' . $count . '" >
- 						Front Side
+ 					
 						
  						' . $innerArray [0] . ' </div>';
 						
 						
 							echo '
 				<div class="back hidden" id = "flashcardb' . $count . '">
- 						Back Side
+ 					
  						' . $innerArray [1] . ' </div>';
 							$count ++;
 							$inc ++;
 						}
+						echo '
+				<div class="front hidden" id = "doneCard">
+					You are done with all the cards.
+					</div>';
 					} else {
 						error_log ( "Dom" );
 					}
@@ -223,6 +153,14 @@ img {
 		</div>
 
 	</div>
+	<div class="row">
+
+		<div class="small-12 columns text-center">
+			<a id=done_button class="button small"> Done With this Card</a> 
+			
+		</div>
+
+	</div>
 
 <?php include_once 'includes/javascript_basic.php'; ?>
 
@@ -230,7 +168,7 @@ img {
 
 	$(document).ready(function(){
 		
-			
+		var allDone = 0;
 		var curCard = 0;
     $("#flashcardf0").show();
 	$("#flashcardb0").show();
@@ -248,6 +186,17 @@ img {
 			
 			
 			curCard--;
+			if (curCard< 0){
+						curCard =  <?php echo $numWords-1?>
+					}
+					while( $('#flashcardf'+curCard).hasClass('done')){
+						curCard--;
+						if (curCard< 0){
+						curCard = <?php echo $numWords-1?>
+					}
+						console.log('got here');
+					}
+					
 			if (curCard<0){ 
 				curCard= <?php echo $numWords -1 ?>;
 				$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
@@ -262,6 +211,7 @@ img {
 			$('#pre_button').attr("disabled", false);
 			$('#next_button').attr("disabled", false);
 			
+			
 			}
   });
 		$( "#flashcardf"+curCard).fadeOut( "slow", function() {
@@ -274,54 +224,165 @@ img {
 	
 	
 	
+	$( "#next_button").click(function() {
 	
-	$( "#next_button" ).click(function() {
-		if ($('#next_button').is('[disabled=disabled]')){
-			console.log('is next disabled'+$('#next_button').prop('disabled'));
-}
-		else{
-			if ($('.card').hasClass('flipped')){
-				$('.card').toggleClass('flipped');
+	
+			if ($('#next_button,#done_button').is('[disabled=disabled]')){
+				console.log('is next disabled'+$('#next_button').prop('disabled'));
 			}
-			
-			 $('#next_button').attr("disabled", true);
-			  $('#pre_button').attr("disabled", true);
-			  
-			
-			
-			
-		console.log('is next disabled'+$("#next_button").is(":disabled"));
-		$( "#flashcardb"+curCard).fadeOut( "slow", function() {
-			
+			else{
+				
+					
+						if ($('.card').hasClass('flipped')){
+							$('.card').toggleClass('flipped');
+						}
 						
-			
-			curCard++;
-			if (curCard> <?php echo $numWords-1?>){ 
-				curCard= 0;
-				$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
-				$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
-				 $('#next_button').attr("disabled", false);
-				  $('#pre_button').attr("disabled", false);
-				  	
-		
-			}
-			else {
-			$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
-			$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
-			 $('#next_button').attr("disabled", false);
-			  $('#pre_button').attr("disabled", false);
-			  	
-			}
-  });
-		$( "#flashcardf"+curCard).fadeOut( "slow", function() {
-    // Animation complete.
-  });
-	}});
+						 $('#next_button').attr("disabled", true);
+						  $('#pre_button').attr("disabled", true);
+						   $('#done_button').attr("disabled", true);
+						  
+						
+						
+						
+					console.log('is next disabled'+$("#next_button").is(":disabled"));
+					$( "#flashcardb"+curCard).fadeOut( "slow", function() {
+						
+								
+						curCard++;
+						if (curCard> <?php echo $numWords-1?>){
+							curCard = 0
+						}
+						while( $('#flashcardf'+curCard).hasClass('done')){
+							curCard++;
+							if (curCard> <?php echo $numWords-1?>){
+							curCard = 0
+						}
+							console.log('got here');
+						}
+						
+						
+						
+					
+						
+						if (curCard> <?php echo $numWords-1?>){ 
+							curCard= 0;
+							$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
+							$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+							 $('#next_button').attr("disabled", false);
+							  $('#pre_button').attr("disabled", false);
+							   $('#done_button').attr("disabled", false);
+								
+					
+						}
+						else {
+						$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
+						$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+						 $('#next_button').attr("disabled", false);
+						  $('#pre_button').attr("disabled", false);
+						   $('#done_button').attr("disabled", false);
+							
+						}
+			  });
+					$( "#flashcardf"+curCard).fadeOut( "slow", function() {
+				// Animation complete.
+			  });
+		}
+	});
 
 	$( "#flip_button" ).click(function() {
-    $('.card').toggleClass('flipped');
+		if ($('#flip_button').is('[disabled=disabled]')){
+				console.log('is next disabled'+$('#next_button').prop('disabled'));
+			}
+		else {
+			$('.card').toggleClass('flipped');
+		}
+		
 	})
-});	
+	
+	
+	
+	$( "#done_button" ).click(function() {
+	 
+			 $("#flashcardf"+curCard).addClass('done');
+			 $("#flashcardb"+curCard).addClass('done');
+			 if ($('#done_button').is('[disabled=disabled]')){
+			console.log('is done disabled'+$('#next_button').prop('disabled'));
+				}
+			else{
+				 allDone++;
+			
+			if(allDone==<?php echo $numWords?>){
+					 $("#flashcardf"+curCard).addClass('done');
+					 $("#flashcardb"+curCard).addClass('done');
+					 $('#next_button').attr("disabled", true);
+					 $('#pre_button').attr("disabled", true);
+					 $('#done_button').attr("disabled", true);
+					 $('#flip_button').attr("disabled", true);
+					 $( "#flashcardb"+curCard).fadeOut( "slow");
+					 $( "#flashcardf"+curCard).fadeOut( "slow", function(){
+						$( "#doneCard").fadeIn( "slow");
+						 })
+				}
+			else{
+				if ($('.card').hasClass('flipped')){
+							$('.card').toggleClass('flipped');
+						}
+						
+						 $('#next_button').attr("disabled", true);
+						  $('#pre_button').attr("disabled", true);
+						   $('#done_button').attr("disabled", true);
+						  
+						
+						
+						
+					console.log('is next disabled'+$("#next_button").is(":disabled"));
+					$( "#flashcardb"+curCard).fadeOut( "slow", function() {
+						
+								
+						curCard++;
+						if (curCard> <?php echo $numWords-1?>){
+							curCard = 0
+						}
+						while( $('#flashcardf'+curCard).hasClass('done')){
+							curCard++;
+							if (curCard> <?php echo $numWords-1?>){
+							curCard = 0
+						}
+							console.log('got here');
+						}
+						
+						
+						
+					
+						
+						if (curCard> <?php echo $numWords-1?>){ 
+							curCard= 0;
+							$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
+							$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+							 $('#next_button').attr("disabled", false);
+							  $('#pre_button').attr("disabled", false);
+							   $('#done_button').attr("disabled", false);
+								
+					
+						}
+						else {
+						$( "#flashcardf"+curCard).fadeIn( "slow", function(){});
+						$( "#flashcardb"+curCard).fadeIn( "slow", function(){});
+						 $('#next_button').attr("disabled", false);
+						  $('#pre_button').attr("disabled", false);
+						   $('#done_button').attr("disabled", false);
+							
+						}
+			  });
+					$( "#flashcardf"+curCard).fadeOut( "slow", function() {
+				// Animation complete.
+			  });
+		}
+	}});
+
+				
+				
+			});	
 </script>
 </body>
 </html>

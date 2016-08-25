@@ -1,0 +1,112 @@
+.hidden {
+	display: none;
+}
+
+#titleText {
+	font-family: 'Questrial', sans-serif;
+	text-align: center;
+	position: relative;
+	top: 10%
+}
+
+#main {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 400%;
+}
+
+.sub {
+	font-family: 'Questrial', sans-serif;
+	font-size: 200%;
+}
+
+.sub2 {
+	font-family: 'Questrial', sans-serif;
+	font-size: 300%;
+}
+
+.quest {
+	font-family: 'Questrial', sans-serif;
+}
+
+#title {
+	height: 500px;
+	background-image: url('/img/green_dust_scratch.png');
+}
+
+.helper {
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+
+img {
+	vertical-align: middle;
+	max-height: 128px;
+}
+
+
+
+/* ---------------------------------------------------------*/
+
+.container {
+    width: 200px;
+    height: 260px;
+    -webkit-perspective: 800px;
+    -moz-perspective: 800px;
+    -o-perspective: 800px;
+    perspective: 800px;
+	
+}
+.card {
+	
+    width: 240%;
+    height: 100%;
+    
+    -webkit-transition: -webkit-transform 1s;
+    -moz-transition: -moz-transform 1s;
+    -o-transition: -o-transform 1s;
+    transition: transform 1s;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transform-origin: 50% 50%;
+}
+.card div {
+    
+
+    height: 100%;
+    width: 100%;
+    line-height: 260px;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+	
+}
+.card .front {
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
+  
+
+  
+}
+
+.card .back {
+     background-image: url("https://upload.wikimedia.org/wikipedia/commons/2/2e/Notecard.jpg");
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+	
+}
+.card.flipped {
+    -webkit-transform: rotateY( 180deg );
+    -moz-transform: rotateY( 180deg );
+    -o-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+}
