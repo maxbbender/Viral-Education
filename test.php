@@ -19,7 +19,7 @@
 		var imageSearchApiKey ="AIzaSyD75qLbuILR5M-RlF4FHgjKg2sQ2Yh8byg";
 		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
 		var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
-		var imageSearchFullURL = customSearchBaseURL + "&key=" + apiKey + "&cx=" + searchEngineID;
+		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
 		var word = '<?php echo $_GET['word']; ?>';
 // 		alert (word);
 		<?php if (!alreadyHasPhotos($_GET['word'], $mysqli)) {?>
@@ -30,7 +30,7 @@
 				$.ajax({
                     type: "GET",
                     url: "helpers/insertPic.php",
-                    data: {word : word, context_url : image.contextLink, thumbnail_url: image.thumbnailLink},
+                    data: {word : word, context_url : this.link, thumbnail_url: image.thumbnailLink},
                     dataType: "JSON",
                     success: function (result) {
                         if (result.success == 'true') {

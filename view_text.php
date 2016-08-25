@@ -25,17 +25,28 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $_GET ['textID'] );
 		$stmt->execute ();
-		$stmt->bind_result ( $title, $content);
+		$stmt->bind_result ( $title, $content );
 		$stmt->store_result ();
 		
 		// if the text has returned rows
 		if ($stmt->num_rows > 0) {
 			$stmt->fetch ();
-			$explodedContent = explode(" ", $content);
 			$spannedWords = "";
-			foreach($explodedContent as $word) {
-				$spannedWords = $spannedWords . "<span class='clickable'>" . $word . " </span>";
+			$re = "/(<p[^>]*>)(.*)(<\\/p>)/";
+			preg_match_all($re, $content, $matches);
+			
+			$count = 1;
+			
+			for ($i = 0; $i <= count($matches[1]); $i++) {
+				$spannedWords = $spannedWords . $matches[1][$i];
+				$explodedContent = explode (" ", $matches[2][$i] );
+				foreach ( $explodedContent as $word ) {
+					$spannedWords = $spannedWords . "<span class='clickable'>" . $word . " </span>";
+				}
+				$spannedWords = $spannedWords . $matches[3][$i];
 			}
+
+
 			
 			$data = '
                 <div class="row text-center">
@@ -67,28 +78,24 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                 </div>
                             </div>
                         </div>
-                        <div id="picSliderDiv" class="row picSlider">
-                        	
-                			<div><img src="../img/student128.png"></div>
-                        	<div><img src="../img/student128.png"></div>
-                        	<div><img src="../img/student128.png"></div>
-                        	
-                        </div>
-                       	<div class="row" id="picSliderButtons">
-                      	</div>
 
 						<div class="row panel callout">
                             <h3 class="subheader">Word Review</h3>
                             <br>
                             <div class="row">
                                 <div class="large-12 columns">
-                                    <a href="flashcards.php?textID=' .  $_GET['textID'] . '" data-options="align:right;" class="button small">Review Cards</a>   
+                                    <a href="flashcards.php?textID=' . $_GET ['textID'] . '" data-options="align:right;" class="button small">Review Cards</a>   
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div id = "pictures" class="row ">
+                    <div class="small-8 columns small-centered">
+                    	<div id="picSliderDiv" class="picSlider"></div>
+               		</div>    
+               </div>
             ';
 		}
 	}
@@ -99,12 +106,13 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <title>View Text - <?php echo $title; ?></title>
 <!-- <meta charset="UTF-8"> -->
     <?php include_once 'includes/css_links.php'; ?>
-    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css"/>
-    <style>
-    	.slick-slide {
-    		max-height : 200px;
-    	}
-    </style>
+    <link rel="stylesheet" type="text/css"
+	href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" />
+<style>
+#pictures {
+	height: 500px;
+}
+</style>
 </head>
 <body>
 <?php include_once 'includes/main_nav.php'; ?> 
@@ -112,46 +120,31 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     <?php echo $data; ?>
 </div>
 <?php include_once 'includes/javascript_basic.php'; ?>
-<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
-<script>
+<script type="text/javascript"
+		src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
+	<script>
 	$(document).ready( function(){
-    	var imageSearchApiKey ="AIzaSyD75qLbuILR5M-RlF4FHgjKg2sQ2Yh8byg";
-		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
-		var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
-		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
-		
-        $('.picSliderDiv').slick({
-        	appendArrows : $('#picSliderButtons'),
-        	adaptiveHeight : true
+        $('.picSlider').slick({
+        	autoplay : true,
+        	arrows : false,
+        	slidesToShow: 2,
+        	slidesToScroll: 1
         });
         
-        $(".clickable").click( function () {
+        $(".clickable").unbind().click( function () {
+            
             var wordClicked = $(this).html();
+            if (wordClicked != '1') {
 
-            // Clean word
-            wordClicked = checkForHTMLTags(wordClicked);
-			wordClicked = cleanWord(wordClicked);
-			wordClicked = wordClicked.toLowerCase();
-			
-			if (hasSpace(wordClicked)) {
+                // Clean word
+                wordClicked = checkForHTMLTags(wordClicked);
+    			wordClicked = cleanWord(wordClicked);
+    			wordClicked = wordClicked.toLowerCase();
+    			
+    		
                 DefineElement(wordClicked);
-            } else {
-                document.getElementById("googleTranslate").innerHTML = "You can not select phrases";
-                document.getElementById("wordReferenceTranslate").innerHTML = "You can not select phrases";
+    			getPhotos(wordClicked);
             }
-
-            $.ajax({
-                type: "GET",
-                url: "/helpers/getPhotos.php",
-                data: {word:wordClicked},
-                success: function (results) {
-                    $('#picSliderDiv').empty();
-                    $.each(results, function(index, value) {
-                        $newDiv = '<div><img src="' + value[1] + '"></div>';
-                    	$('#picSliderDiv').append($newDiv);
-                    });
-                }
-            });
         });
 
         /* Defines the element from all translation engines. This is where we do 
@@ -289,6 +282,66 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                 return m[1];
             } else {
                 return stringToClean;
+            }
+        }
+
+        function populatePhotos(word) {
+        	var imageSearchApiKey ="AIzaSyD75qLbuILR5M-RlF4FHgjKg2sQ2Yh8byg";
+     		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
+     	    var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
+     		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
+        	$.getJSON(imageSearchFullURL + "&q=" + word, function (data) {
+     			var items = data.items;
+     			$.each(items, function() {
+     				image = this.image;
+     				$.ajax({
+                         type: "GET",
+                         url: "helpers/insertPic.php",
+                         data: {word : word, context_url : this.link, thumbnail_url: image.thumbnailLink},
+                         dataType: "JSON",
+                         success: function (result) {
+                            
+                         }
+                             
+                     });
+     			});
+     			getPhotos(word);
+     		});
+        }
+        
+		function fillData(results) {
+			$('.picSlider').slick('unslick');
+            $('#picSliderDiv').empty();
+            $('#picSliderDiv').fadeOut(function() {
+            	$.each(results, function(index, value) {
+                   $newDiv = '<div><img class="sliderPics" src="' + value[0] + '"></div>';
+                	$('#picSliderDiv').append($newDiv);
+                });
+            	$('.picSlider').slick({
+            		centerPadding : '50px',
+                	autoplay : true,
+                	arrows : false,
+                	slidesToShow: 2,
+                	slidesToScroll: 1,
+            });
+            	$('#picSliderDiv').fadeIn();
+            });
+		}
+		
+        function getPhotos(word) {
+            if (word != '1') {
+        	 $.ajax({
+                 type: "GET",
+                 url: "/helpers/getPhotos.php",
+                 data: {word:word},
+                 success: function (results) {
+                     if (results.length === 0) {
+                    	 populatePhotos(word);
+                     } else {
+                    	 fillData(results);
+                     }
+                 }
+             });
             }
         }
             
