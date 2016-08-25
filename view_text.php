@@ -61,7 +61,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                 </div>
                             </div>
                         </div>
-                        <div class="row picSlider">
+                        <div id="picSliderDiv" class="row picSlider">
                         	
                 			<div><img src="../img/student128.png"></div>
                         	<div><img src="../img/student128.png"></div>
@@ -102,13 +102,14 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     	var imageSearchApiKey ="AIzaSyD75qLbuILR5M-RlF4FHgjKg2sQ2Yh8byg";
 		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
 		var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
-		var imageSearchFullURL = customSearchBaseURL + "&key=" + apiKey + "&cx=" + searchEngineID;
+		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
 		
         $('.picSlider').slick({
         	appendArrows : $('#picSliderButtons'),
         	adaptiveHeight : true
         });
-        $(content).click(function () {
+        
+        $("#content").click(function () {
             var wordClicked = window.getSelection();
 
             // This is testing for "phrases" and removing words to the right and left
@@ -132,7 +133,26 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                 document.getElementById("googleTranslate").innerHTML = "You can not select phrases";
                 document.getElementById("wordReferenceTranslate").innerHTML = "You can not select phrases";
             }
+
+            $.ajax({
+                type: "GET",
+                url: "/helpers/getPhotos.php",
+                data: {word:wordFinal},
+                success: function (results) {
+                    $('#picSliderDiv').empty();
+                    $.each(results, function(index, value) {
+                        $newDiv = '<div><img src="' + value[1] + '"></div>';
+                    	$('#picSliderDiv').append($newDiv);
+                    });
+                }
+            });
         });
+
+		
+
+
+
+
 
         /* Defines the element from all translation engines. This is where we do 
          * all the API requests with "element" as the word to define.
