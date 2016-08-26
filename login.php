@@ -21,67 +21,72 @@ session_start ();
 <?php include_once 'includes/main_nav.php'; ?>
 
 <!-- Login Form -->
-	<div class="row">
-		<div class="small-6 columns small-centered">
-			<form action="includes/process_login.php" id="login_form"
-				method="POST" data-abide>
-				<fieldset>
-					<legend>Login</legend>
-					<div class="row">
-						<div class="small-4 columns">
-							<label for="username" class="right inline">Username: </label>
-						</div>
-						<div class="small-8 columns">
-							<input type="text" id="username" placeholder="Username"
-								name="username" require pattern="alpha_numeric"> <small
-								class="error">Username can contain only digits, upper and
-								lowercase letters</small>
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-4 columns">
-							<label for="password" class="right inline">Password: </label>
-						</div>
-						<div class="small-8 columns">
-							<input type="password" id="password" name="password" required
-								pattern="valid_password"> <small class="error">Passwords must
-								contain at least one upper case letter, one lower case letter
-								and one number </small>
-						</div>
-					</div>
-					<?php 
-		$errorText = "";
-		$errorType = "";
-		if (isset($_GET['error'])) {
-			$errorI = $_GET['error'];
-			if ($errorI == 5){ 
-				$errorText = "Invalid Username or Password";
-				$errorType = "alert";
-			} else if ($errorI == 3) {
-				$errorText = "That username doesn't exists. Register it!";
-				$errorType = "warning";
-			}
-			
-			echo '
-				<div class="row">
-					<div data-alert class="small-8 columns small-centered alert-box ' . $errorType . '">
-						' . $errorText . '
-						<a href="#" class="close">&times;</a>
-					</div>
-				</div>
-				';
-		}?>
+<div class="row">
+    <div class="small-6 columns small-centered">
+        <form action="includes/process_login.php" id="login_form" method="POST" data-abide>
+            <fieldset>
+            
+                <legend>Login</legend>
+                <div class="row">
+                    <div class="small-4 columns">
+                        <label for="username" class="right inline">Username: </label>
+                    </div>
+                    <div class="small-8 columns">
+                        <input type="text" id="username" placeholder="Username" name="username" require
+                               pattern="alpha_numeric">
+                        <small class="error">Username can contain only digits, upper and lowercase letters</small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-4 columns">
+                        <label for="password" class="right inline">Password: </label>
+                    </div>
+                    <div class="small-8 columns">
+                        <input type="password" id="password" name="password" required pattern="valid_password">
+                        <small class="error">Passwords must contain at least one upper case letter, one lower case
+                            letter and one number
+                        </small>
+                    </div>
+                </div>
 
-				</fieldset>
-				<div class="row">
-					<div class="small-12 columns text-center">
-						<input type="submit" class="button right radius small"
-							value="Log In">
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+            </fieldset>
+            <?php 
+    		/*
+	    	 * Error List 
+	    	 * 0 - Login Successful
+	    	 * 1 - Undefined?
+	    	 * 2 - Undefined?
+	    	 * 3 - No user exists
+	    	 * 4 - Account is locked
+	    	 * 5 - Password Incorrect
+	    	 * 
+	    	 */
+            if (isset($_GET['error'])) {
+            	$reason = "";
+            	$errorID = $_GET['error'];
+            	if ($errorID == 5) {
+            		$reason = "Password is incorrect, please try again";
+            	} else if ($errorID == 4) {
+            		$reason = "Your account is locked due to too many failed login attempts, please try later";
+            	} else if ($errorID == 3) {
+            		$reason = "User account does not exists, register <a href='register.php'>here</a>";
+            	}
+            
+            	echo '
+    			<div data-alert class="alert-box alert radius">
+					' . $reason . '
+				  <a href="#" class="close">&times;</a>
+				</div>';
+            }
+            ?>
+            <div class="row">
+                <div class="small-12 columns text-center">
+                    <input type="submit" class="button right radius small" value="Log In">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 	<!-- Register Link -->
 	<div class="row">

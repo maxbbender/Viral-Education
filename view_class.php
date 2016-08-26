@@ -11,7 +11,7 @@ include_once 'includes/functions.php';
 if (isset($_GET['class_id'])) {
 
     //Initiate whether or not user is a teacher of this class/Class exists
-    $teacher = $exists = FALSE;
+    $teacher = $exists = TRUE;
 
     //Initiate Variables
     $className = $classNews = "";
@@ -30,6 +30,7 @@ if (isset($_GET['class_id'])) {
     //Get teacher's current text list for assigning
     if ($teacher) {
         $myTexts = getCollection($_SESSION['user_id'], $mysqli);
+		$assigned_texts = getAssigned($_GET['class_id'], $mysqli);
         $assign = '
             <form action="assign_text.php" method="GET">
                 <div class="row">
@@ -53,6 +54,34 @@ if (isset($_GET['class_id'])) {
                 </div>
             </form>
         ';
+		
+		//get assigned texts to be removed 
+		$assign .= '
+            <form action="assign_text.php" method="GET">
+                <div class="row">
+                    <div class="small-8 columns">
+                        <select name="textID">
+
+        ';
+        foreach ($assigned_texts as $texts) {
+            $explodeText = explode("#", $texts);
+            $assign .= '
+                <option value="' . $explodeText[1] . '">' . $explodeText[0] . '</option>
+            ';
+        }
+        $assign .= '
+                        </select>
+                    </div>
+                    <div class="small-4 columns">
+                        <input type="submit" value="Remove Text" class="button radius tiny">
+                    </div>
+                    <input type="hidden" name="classID" value="' . $_GET['class_id'] . '">
+                </div>
+            </form>
+        ';
+		
+		
+		
     }
     if ($exists) {
         //Populate Information SideBar

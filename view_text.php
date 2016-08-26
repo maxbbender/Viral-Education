@@ -11,7 +11,6 @@ $class = 0;
 if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	if (isset ( $_GET ['class'] )) { // is the class set in the HTTP GET header
 		$class = $_GET ['class'];
-		
 		// Records that student has read text
 		recordStudentRead ( $_GET ['textID'], $_GET ['class'], $_SESSION ['user_id'], $mysqli );
 	}
@@ -22,6 +21,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         FROM texts
         WHERE id = ?
     ";
+	
 	if ($stmt = $mysqli->prepare ( $query )) {
 		$stmt->bind_param ( "i", $_GET ['textID'] );
 		$stmt->execute ();
@@ -31,28 +31,34 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 		// if the text has returned rows
 		if ($stmt->num_rows > 0) {
 			$stmt->fetch ();
-			$content = '
+			$spannedWords = "";
+			$re = "/(<p[^>]*>)(.*)(<\\/p>)/";
+			preg_match_all($re, $content, $matches);
+			
+			for ($i = 0; $i <= count($matches[1]); $i++) {
+				$spannedWords = $spannedWords . $matches[1][$i];
+				$explodedContent = explode (" ", $matches[2][$i] );
+				foreach ( $explodedContent as $word ) {
+					$spannedWords = $spannedWords . "<span class='clickable'>" . $word . " </span>";
+				}
+				$spannedWords = $spannedWords . $matches[3][$i];
+			}
+			
+			$data = '
                 <div class="row text-center">
                     <h2> ' . html_entity_decode ( $title ) . '</h2>
                 </div><hr>
                 <div class="row">
                     <div id="content" style="height:600px; overflow:scroll;" class="small-8 columns panel">
-                        ' . $content . '
+                      	' . $spannedWords . '
                     </div>
                     <div id="translate" class="small-4 columns">
                         <div class="row panel callout">
-                            <h3 class="subheader">Google Translate</h3>
-                            <span id="googleTranslate" class="">No Word Selected</span>
-                        </div>
-                        <div class="row panel callout">
-                            <h3 class="subheader">Word Reference</h3>
-                            <div class="row">
-                                <div class="large-12 columns">
-                                    <span id="wordReferenceTranslate" class="">No Word Selected</span>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
+                            <h3 class="subheader">Translations</h3>
+                            <span>Google Translate : </span><span id="googleTranslate" class="">No Word Selected</span><br><br>
+                        	<span>Word Reference : </span><span id="wordReferenceTranslate" class="">No Word Selected</span>
+                            <br><br>
+                      		<div class="row">
                                 <div class="large-12 columns">
                                     <a href="#" data-options="align:right;is_hover:true" data-dropdown="wordReferenceUsage" class="button small">See Usages</a>
                                     <ul id="wordReferenceUsage" data-dropdown-content class="medium f-dropdown" aria-hidden="true" tabindex="-1">
@@ -61,8 +67,24 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                 </div>
                             </div>
                         </div>
+
+						<div class="row panel callout">
+                            <h3 class="subheader">Word Review</h3>
+                            <br>
+                            <div class="row">
+                                <div class="large-12 columns">
+                                    <a href="flashcards.php?textID=' . $_GET ['textID'] . '" data-options="align:right;" class="button small">Review Cards</a>   
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div id = "pictures" class="row ">
+                    <div class="small-8 columns small-centered">
+                    	<div id="picSliderDiv" class="picSlider"></div>
+               		</div>    
+               </div>
             ';
 		}
 	}
@@ -73,38 +95,44 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <title>View Text - <?php echo $title; ?></title>
 <!-- <meta charset="UTF-8"> -->
     <?php include_once 'includes/css_links.php'; ?>
+    <link rel="stylesheet" type="text/css"
+	href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" />
+<style>
+#pictures {
+	height: 500px;
+}
+</style>
 </head>
 <body>
 <?php include_once 'includes/main_nav.php'; ?> 
 <div class="row">
-    <?php echo $content; ?>
+    <?php echo $data; ?>
 </div>
 <?php include_once 'includes/javascript_basic.php'; ?>
-<script>
-    $( document).ready(function(){
-        $(content).click(function () {
-            var wordClicked = window.getSelection();
-            wordClicked.modify('extend', 'backward', 'word');
+<script type="text/javascript"
+		src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
+	<script>
+	$(document).ready( function(){
+        $('.picSlider').slick({
+        	autoplay : true,
+        	arrows : false,
+        	slidesToShow: 2,
+        	slidesToScroll: 1
+        });
+        
+        $(".clickable").unbind().click( function () {
+            
+            var wordClicked = $(this).html();
+            if (wordClicked != '1') {
 
-            // This is testing for "phrases" and removing words to the right and left
-            // of the word
-            var wordClickedModified1 = wordClicked.toString();
-
-            wordClicked.modify('extend', 'forward', 'word');
-
-			/* testing for "phrases" to the left of the word */
-            var wordClickedModified1 = s.toString();
-            s.modify('move', 'forward', 'character');
-            var i = wordClickedModified2 + wordClickedModified1;
-            var wordFinal = i.toLowerCase();
-			wordFinal = wordFinal.split(" ")[0];
-			wordFinal = wordFinal.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g, "");
-			
-            if (hasSpace(wordFinal)) {
-                DefineElement(wordFinal);
-            } else {
-                document.getElementById("googleTranslate").innerHTML = "You can not select phrases";
-                document.getElementById("wordReferenceTranslate").innerHTML = "You can not select phrases";
+                // Clean word
+                wordClicked = checkForHTMLTags(wordClicked);
+    			wordClicked = cleanWord(wordClicked);
+    			wordClicked = wordClicked.toLowerCase();
+    			
+    		
+                DefineElement(wordClicked);
+    			getPhotos(wordClicked);
             }
         });
 
@@ -167,19 +195,11 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                             //Usages
                             $(wordReferenceUsage).empty();
                             var check = 1;
-                            try{
-                                while(check == 1){
-                                    $("<li><strong>" + data.original.Compounds[inc].OriginalTerm['term'] + ":</strong> " + data.original.Compounds[inc].FirstTranslation['term'] + "</li>").appendTo(wordReferenceUsage);
-                                    try {
-                                        var temp = data.original.Compounds[inc+1].OriginalTerm['term'];
-                                        inc++;
-                                    } catch (err){
-                                        check = 0;
-                                    }
-                                }
-                            } catch(err){
+                            var compounds = data.original.Compounds;
 
-                            }
+							$.each(compounds, function() {
+								$("#wordReferenceUsage").append("<li><strong>" + this.OriginalTerm.term + " : </strong>" + this.FirstTranslation.term + "</li>");
+							});
 
                         });
 
@@ -216,6 +236,96 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                 return 'to ';
             }
         }
+
+        function checkForHTMLTags(stringToCheck) {
+		    var re = /<\w+>\s*(\w+)\s*<\/\w+>/; 
+		    var m;
+		     
+		    if ((m = re.exec(stringToCheck)) !== null) {
+		        if (m.index === re.lastIndex) {
+		            re.lastIndex++;
+		        }
+		        return m[1];
+		    } else {
+			    return stringToCheck;
+		    }
+        }
+
+        function cleanWord(stringToClean) {
+            var re = /\W*(\w+)\W*/; 
+            var m;
+             
+            if ((m = re.exec(stringToClean)) !== null) {
+                if (m.index === re.lastIndex) {
+                    re.lastIndex++;
+                }
+
+                return m[1];
+            } else {
+                return stringToClean;
+            }
+        }
+
+        function populatePhotos(word) {
+        	var imageSearchApiKey ="AIzaSyAJgQycIa3vSLEuC48VND-ZhkOHfxBRcSM";
+     		var imageSearchEngineID = "004858954618909365061:lujb8xyl_ui";
+     	    var imageSearchBaseURL = "https://www.googleapis.com/customsearch/v1?searchType=image";
+     		var imageSearchFullURL = imageSearchBaseURL + "&key=" + imageSearchApiKey + "&cx=" + imageSearchEngineID;
+        	$.getJSON(imageSearchFullURL + "&q=" + word, function (data) {
+     			var items = data.items;
+     			$.each(items, function() {
+     				image = this.image;
+     				$.ajax({
+                         type: "GET",
+                         url: "helpers/insertPic.php",
+                         data: {word : word, context_url : this.link, thumbnail_url: image.thumbnailLink},
+                         dataType: "JSON",
+                         success: function (result) {
+                            
+                         }
+                             
+                     });
+     			});
+     			getPhotos(word);
+     		});
+        }
+        
+		function fillData(results) {
+			$('.picSlider').slick('unslick');
+            $('#picSliderDiv').empty();
+            $('#picSliderDiv').fadeOut(function() {
+            	$.each(results, function(index, value) {
+                   $newDiv = '<div><img class="sliderPics" src="' + value[0] + '"></div>';
+                	$('#picSliderDiv').append($newDiv);
+                });
+            	$('.picSlider').slick({
+            		centerPadding : '50px',
+                	autoplay : true,
+                	arrows : false,
+                	slidesToShow: 2,
+                	slidesToScroll: 1,
+            });
+            	$('#picSliderDiv').fadeIn();
+            });
+		}
+		
+        function getPhotos(word) {
+            if (word != '1') {
+        	 $.ajax({
+                 type: "GET",
+                 url: "/helpers/getPhotos.php",
+                 data: {word:word},
+                 success: function (results) {
+                     if (results.length === 0) {
+                    	 populatePhotos(word);
+                     } else {
+                    	 fillData(results);
+                     }
+                 }
+             });
+            }
+        }
+            
     });
 </script>
 </body>
