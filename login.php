@@ -49,6 +49,35 @@ session_start();
                 </div>
 
             </fieldset>
+            <?php 
+    		/*
+	    	 * Error List 
+	    	 * 0 - Login Successful
+	    	 * 1 - Undefined?
+	    	 * 2 - Undefined?
+	    	 * 3 - No user exists
+	    	 * 4 - Account is locked
+	    	 * 5 - Password Incorrect
+	    	 * 
+	    	 */
+            if (isset($_GET['error'])) {
+            	$reason = "";
+            	$errorID = $_GET['error'];
+            	if ($errorID == 5) {
+            		$reason = "Password is incorrect, please try again";
+            	} else if ($errorID == 4) {
+            		$reason = "Your account is locked due to too many failed login attempts, please try later";
+            	} else if ($errorID == 3) {
+            		$reason = "User account does not exists, register <a href='register.php'>here</a>";
+            	}
+            
+            	echo '
+    			<div data-alert class="alert-box alert radius">
+					' . $reason . '
+				  <a href="#" class="close">&times;</a>
+				</div>';
+            }
+            ?>
             <div class="row">
                 <div class="small-12 columns text-center">
                     <input type="submit" class="button right radius small" value="Log In">
