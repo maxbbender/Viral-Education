@@ -624,3 +624,105 @@ function alreadyHasPhotos($word, $mysqli) {
 	}
 	
 }
+
+function getReports($userID, $mysqli) {
+	if (isAdmin($userID, $mysqli)) {
+		$returnArray = array(array());
+		$arrayCount = 0;
+		$query = '
+			SELECT report_id, report_content, report_url, report_page, member_id
+			FROM reports
+			WHERE done = 0
+				';
+		if ($stmt = $mysqli->prepare($query)){
+			$stmt->execute();
+			$stmt->bind_result($id, $content, $url, $page, $member);
+			$stmt->store_result();
+			if ($stmt->num_rows > 0){
+				while ($stmt->fetch()) {
+					$returnArray[$arrayCount][0] = $id;
+					$returnArray[$arrayCount][1] = $content;
+					$returnArray[$arrayCount][2] = $url;
+					$returnArray[$arrayCount][3] = $page;
+					$returnArray[$arrayCount][4] = getMemberName($userID, $mysqli);
+					$arrayCount++;
+				}
+				return $returnArray;
+			} else {
+				return false;
+			}
+		} else {
+			echo "ERROR SQL";
+		}
+		
+	}
+}
+
+function markReportDone($reportID, $mysqli) {
+	$query = "
+            UPDATE reports
+            SET done = 1
+            WHERE report_id = ?
+        ";
+	if ($stmt = $mysqli->prepare($query)) {
+		$stmt->bind_param("i", $reportID);
+		$stmt->execute();
+		$stmt->store_result();
+		$error = $stmt->error;
+		if ($error == "") {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+	} else {
+		return FALSE;
+	}
+}
+
+function isAdmin($userID, $mysqli) {
+	$query = '
+		SELECT admin
+		FROM members
+		WHERE id = ?
+			';
+	if ($stmt = $mysqli->prepare($query)){
+		$stmt->bind_param("i", $userID);
+		$stmt->execute();
+		$stmt->bind_result($admin);
+		$stmt->store_result();
+		if ($stmt->num_rows > 0){
+			$stmt->fetch();
+			if ($admin == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	} else {
+		echo "#Query";
+	}
+}
+
+function getMemberName($userID, $mysqli) {
+$query = '
+		SELECT username, fname, lname
+		FROM members
+		WHERE id = ?
+			';
+	if ($stmt = $mysqli->prepare($query)){
+		$stmt->bind_param("i", $userID);
+		$stmt->execute();
+		$stmt->bind_result($username, $fname, $lname);
+		$stmt->store_result();
+		if ($stmt->num_rows > 0){
+			$stmt->fetch();
+			return $fname . ' ' . $lname . ' (' . $username . ')';
+		} else {
+			return false;
+		}
+	} else {
+		echo "#Query";
+	}
+}

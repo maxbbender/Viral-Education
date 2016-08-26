@@ -12,8 +12,8 @@ session_start ();
 <meta charset="UTF-8">
 <title>Viral Education - Login</title>
     <?php
-				include_once 'includes/css_links.php';
-				?>
+		include_once 'includes/css_links.php';
+	?>
 </head>
 <body>
 	<!-- Main Nav -->
@@ -25,7 +25,6 @@ session_start ();
     <div class="small-6 columns small-centered">
         <form action="includes/process_login.php" id="login_form" method="POST" data-abide>
             <fieldset>
-            
                 <legend>Login</legend>
                 <div class="row">
                     <div class="small-4 columns">
@@ -48,8 +47,8 @@ session_start ();
                         </small>
                     </div>
                 </div>
-
             </fieldset>
+            
             <?php 
     		/*
 	    	 * Error List 
@@ -62,23 +61,30 @@ session_start ();
 	    	 * 
 	    	 */
             if (isset($_GET['error'])) {
-            	$reason = "";
-            	$errorID = $_GET['error'];
-            	if ($errorID == 5) {
-            		$reason = "Password is incorrect, please try again";
-            	} else if ($errorID == 4) {
-            		$reason = "Your account is locked due to too many failed login attempts, please try later";
-            	} else if ($errorID == 3) {
-            		$reason = "User account does not exists, register <a href='register.php'>here</a>";
-            	}
-            
-            	echo '
-    			<div data-alert class="alert-box alert radius">
+            	if ($_GET['error'] != 0){
+            		$type = "";
+            		$reason = "";
+            		$errorID = $_GET['error'];
+            		if ($errorID == 5) {
+            			$type = "alert";
+            			$reason = "Password is incorrect, please try again";
+            		} else if ($errorID == 4) {
+            			$type = "alert";
+            			$reason = "Your account is locked due to too many failed login attempts, please try later";
+            		} else if ($errorID == 3) {
+            			$type = "warning";
+            			$reason = "User account does not exists, register <a href='register.php'>here</a>";
+            		}
+            		
+            		echo '
+    			<div data-alert class="alert-box ' . $type . ' radius">
 					' . $reason . '
 				  <a href="#" class="close">&times;</a>
 				</div>';
+            	}
             }
             ?>
+            
             <div class="row">
                 <div class="small-12 columns text-center">
                     <input type="submit" class="button right radius small" value="Log In">
@@ -95,12 +101,8 @@ session_start ();
 				Register Here!</a>
 		</div>
 	</div>
-	<script type="text/javascript" src="js/vendor/jquery.js"></script>
-	<script type="text/javascript" src="js/foundation/foundation.js"></script>
-	
+	<?php require 'includes/javascript_basic.php'?>
 	<script type="text/javascript" src="js/sha512.js"></script>
-	<script type="text/javascript" src="js/foundation/foundation.abide.js"></script>
-	<script src="js/foundation/foundation.alert.js"></script>
 	<script>
     $(document).foundation({
         abide: {
