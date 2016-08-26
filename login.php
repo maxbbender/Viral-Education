@@ -25,6 +25,7 @@ session_start();
     <div class="small-6 columns small-centered">
         <form action="includes/process_login.php" id="login_form" method="POST" data-abide>
             <fieldset>
+            
                 <legend>Login</legend>
                 <div class="row">
                     <div class="small-4 columns">
