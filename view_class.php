@@ -32,7 +32,7 @@ if (isset($_GET['class_id'])) {
         $myTexts = getCollection($_SESSION['user_id'], $mysqli);
 		$assigned_texts = getAssigned($_GET['class_id'], $mysqli);
         $assign = '
-            <form action="assign_text.php" method="GET">
+            <form action="assign_text.php" method="GET" id="assign_form">
                 <div class="row">
                     <div class="small-8 columns">
                         <select name="textID">
@@ -49,12 +49,12 @@ if (isset($_GET['class_id'])) {
 						
                     </div>
                     <div class="small-4 columns">
-        				<input name="date" id="domislove2" type="text" >
+        				<input name="date" id="domislove2" type="text">
 					
 
 		
 		
-                        <input type="submit" value="Assign Text" class="button radius tiny">
+                        <input type="button" value="Assign Text" class="button radius tiny" id="assign_button">
                     </div>
                     <input type="hidden" name="classID" value="' . $_GET['class_id'] . '">
                 </div><hr>
@@ -376,8 +376,19 @@ $(document).ready(function () {
 	});
 
 	$(function() {
-	$("#Assign_text")
 	
+	$("#assign_button").click(function(){
+	  			console.log('date='+$('#date_input').val());
+      if ($("#domislove2").val()>"<?php echo date('Y-m-d H:i:s')?>"||$("#date_input").val>= "0000-00-00 00:00:00"){
+		 alert("pass");
+         $("form#assign_form").submit();
+		   
+		 
+				}
+	else {
+		  alert("You can not assign a reading that is due before todays date.");
+	 }
+		})
    $("#remove_button").click(function(){
 	   
       if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+". \n\nClick Ok to confirm this action.")){
