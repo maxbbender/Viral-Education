@@ -156,7 +156,7 @@ if (isset($_GET['class_id'])) {
             FROM assigned_texts
             LEFT JOIN texts
               ON assigned_texts.text_id = texts.id
-            WHERE assigned_texts.class_id = ?
+            WHERE assigned_texts.class_id = ? AND (NOW() < assignment_due OR assignment_due='0000-00-00 00:00:00')
         ";
         if ($stmt = $mysqli->prepare($query)) {
             $stmt->bind_param("i", $_GET['class_id']);

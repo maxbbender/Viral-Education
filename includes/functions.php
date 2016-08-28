@@ -304,7 +304,7 @@ function getAssigned($class_id, $mysqli)
     FROM assigned_texts
     LEFT JOIN texts
     ON assigned_texts.text_id = texts.id
-    WHERE assigned_texts.class_id = ?
+    WHERE assigned_texts.class_id = ? 
 ";
     if ($stmt = $mysqli->prepare($query)) {
             $stmt->bind_param("i", $_GET['class_id']);

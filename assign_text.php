@@ -17,11 +17,7 @@ if (isset($_GET['classID'])) {
         ";
         if ($stmt = $mysqli->prepare($query)) {
             $now = time();
-			$day= substr("". $_GET['date']." ". $_GET['time'],0,2);
-			$month= substr("". $_GET['date']." ". $_GET['time'], 3, 2);
-			$year= substr("". $_GET['date']." ". $_GET['time'], 6, 4);
-			$timestamp =strtotime("". $year ."-".$month."-".$day." ".$_GET['time']);
-			$dt  =  date("Y-m-d H:i:s", $timestamp);
+			$dt  =  $_GET['date'];
             $stmt->bind_param("iiiis", $_GET['textID'], $_GET['classID'], $_SESSION['user_id'], $now, $dt);
             $stmt->execute();
 			//echo $day;
@@ -30,7 +26,7 @@ if (isset($_GET['classID'])) {
 			echo $timestamp;
 			//echo $dt;
 			//echo $now;
-           // header("Location: view_class.php?class_id=" . $_GET['classID']);
+            header("Location: view_class.php?class_id=" . $_GET['classID']);
         }
     } else {
         echo 'You are not the teacher';
