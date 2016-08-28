@@ -24,14 +24,14 @@ if ($_SESSION ['teacher'] == TRUE) {
 }
 if (isset ( $_SESSION ['admin'] )) {
 	if ($_SESSION ['admin'] == TRUE) {
-		echo '<li class="has-dropdown">
+		echo '
+			<li class="has-dropdown">
 				<a href="#">Administrator</a>
 				<ul class="dropdown">
-					<li><a href="viewReports.php">Reports</li>
+					<li><a href="view_reports.php">View Reports</li>
 				</ul>
 			</li>
-				
-				';
+		';
 	}
 }
 if (isset ( $_SESSION ['logged'] )) {
