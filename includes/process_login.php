@@ -9,6 +9,12 @@ if (isset($_POST['username'], $_POST['password'])) {
     $login = -1;
     $login = login($username, $password, $mysqli);
 
+    /*
+     * ErrorCode(0) - Login Success
+     * ErrorCode(3) - No User exists
+     * ErrorCode(5) - Password Incorrect
+     * 
+     */
     if ($login == 0) {
         //Login success
         header('Location: ../index.php');

@@ -31,8 +31,13 @@ sudo rm /etc/apache2/sites-enabled/000-default.conf
 sudo cp /vagrant/cfg_vagrant/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 sudo chmod -x /etc/apache2/sites-enabled/000-default.conf
 
+# phpmyadmin
+sudo apt-get -y install phpmyadmin
+
 # restart apache2
 sudo service apache2 restart
 
 # init database
 mysql -u root -pdomislove < /vagrant/20141111_000001.db
+
+sudo

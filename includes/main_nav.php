@@ -4,7 +4,7 @@
  *
  * @Author: Max Bender
  */
-session_start();
+session_start ();
 echo '
 	<nav class="top-bar" data-topbar>
 		<ul class="title-area">
@@ -16,15 +16,27 @@ echo '
 		<section class="top-bar-section">
 		
 		<ul class="right">';
-			//<li class=""><a href="#">How it Works</a></li>
-			//<li class=""><a href="#">About Us</a></li>
-   // ';
-if ($_SESSION['teacher'] == TRUE) {
-    echo '<li class=""><a href="panel.php">Teacher Panel</a></li>';
+// <li class=""><a href="#">How it Works</a></li>
+// <li class=""><a href="#">About Us</a></li>
+// ';
+if ($_SESSION ['teacher'] == TRUE) {
+	echo '<li class=""><a href="panel.php">Teacher Panel</a></li>';
 }
-if (isset($_SESSION['logged'])) {
-    if ($_SESSION['logged'] == TRUE) {
-        echo '
+if (isset ( $_SESSION ['admin'] )) {
+	if ($_SESSION ['admin'] == TRUE) {
+		echo '
+			<li class="has-dropdown">
+				<a href="#">Administrator</a>
+				<ul class="dropdown">
+					<li><a href="view_reports.php">View Reports</li>
+				</ul>
+			</li>
+		';
+	}
+}
+if (isset ( $_SESSION ['logged'] )) {
+	if ($_SESSION ['logged'] == TRUE) {
+		echo '
             <li>
                 <a href="report.php">Report Issue</a>
             </li>
@@ -39,12 +51,12 @@ if (isset($_SESSION['logged'])) {
                             <li><a href="join_class.php">Join Class</a></li>
                         </ul>
                     </li>
-                    <li class=""><a href="my_texts.php?userID= ' . $_SESSION['user_id'] . '">My Readings</a></li>
+                    <li class=""><a href="my_texts.php?userID= ' . $_SESSION ['user_id'] . '">My Readings</a></li>
                     <li class=""><a href="create_text.php">Create Text</a></li>
                 </ul>
             </li>
             <li class="has-dropdown">
-                <a href="#">' . $_SESSION['name'] . '</a>
+                <a href="#">' . $_SESSION ['name'] . '</a>
                 <ul class="dropdown">
                     <li class=""><a href="account.php">My Account</a></li>
                     <li class=""><a href="logout.php">Logout</a></li>
@@ -53,9 +65,9 @@ if (isset($_SESSION['logged'])) {
 
 
                    ';
-    }
+	}
 } else {
-    echo '
+	echo '
                 <li class=""><a href="login.php">Login</a></li>
                 <li class=""><a href="register.php">Register</a></li>';
 }
