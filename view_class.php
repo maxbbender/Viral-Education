@@ -46,14 +46,62 @@ if (isset($_GET['class_id'])) {
         }
         $assign .= '
                         </select>
+						
                     </div>
                     <div class="small-4 columns">
+					
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+		
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+		<script>
+		$( function() {
+			$( "#datepicker" ).datepicker();
+		} );
+		</script>
+		<input type="text" id="datepicker" name="date">
+		<select id="timepicker" name="time">
+		<option value="00:00:00">12:00 AM </option>
+		<option value="01:00:00">1:00 AM </option>
+		<option value="02:00:00">2:00 AM </option>
+		<option value="03:00:00">3:00 AM </option>
+		<option value="04:00:00">4:00 AM </option>
+		<option value="05:00:00">5:00 AM </option>
+		<option value="06:00:00">6:00 AM </option>
+		<option value="07:00:00">7:00 AM </option>
+		<option value="08:00:00">8:00 AM </option>
+		<option value="09:00:00">9:00 AM </option>
+		<option value="10:00:00">10:00 AM </option>
+		<option value="11:00:00">11:00 AM </option>
+		<option value="12:00:00">12:00 PM </option>
+		<option value="13:00:00">1:00 PM </option>
+		<option value="14:00:00">2:00 PM </option>
+		<option value="15:00:00">3:00 PM </option>
+		<option value="16:00:00">4:00 PM </option>
+		<option value="17:00:00">5:00 PM </option>
+		<option value="18:00:00">6:00 PM </option>
+		<option value="19:00:00">7:00 PM </option>
+		<option value="20:00:00">8:00 PM </option>
+		<option value="21:00:00">9:00 PM </option>
+		<option value="22:00:00">10:00 PM </option>
+		<option value="23:00:00">11:00 PM </option>		
+		
+		</select>
+		
+		
                         <input type="submit" value="Assign Text" class="button radius tiny">
                     </div>
                     <input type="hidden" name="classID" value="' . $_GET['class_id'] . '">
-                </div>
+                </div><hr>
             </form>
         ';
+		$assign .= '<div>
+		
+		</div>';
+ 
+
+	
+
 		
 		//get assigned texts to be removed 
 		$assign .= '
@@ -76,7 +124,7 @@ if (isset($_GET['class_id'])) {
                         <input type="button" value="Remove Text" class="button radius tiny" id="remove_button">
                     </div>
                     <input type="hidden" name="classID" value="' . $_GET['class_id'] . '">
-                </div>
+                </div><hr>
             </form>
         ';
 		
@@ -323,6 +371,8 @@ if (isset($_GET['class_id'])) {
 <html>
 <head>
     <title>Viral Education - View Class</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+
     <?php include_once 'includes/css_links.php'; ?>
 </head>
 <body>
@@ -342,21 +392,32 @@ if (isset($_GET['class_id'])) {
     </div>
 </div>
 <?php include_once 'includes/javascript_basic.php'; ?>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+
 <script>
 
 	
 $(document).ready(function () {
 	$(function() {
+	
    $("#remove_button").click(function(){
+	   
       if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+" Click Ok to confirm this action.")){
          $("form#remove_form").submit();
+		  
 		 
-		 
-      }
-   });
-});
-});
+				}
+		})
+	  
+		})
+   })
 
+
+
+  
+ 
+  </script>
 
 </script>
 </body>

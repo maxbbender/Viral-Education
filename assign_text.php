@@ -12,14 +12,25 @@ if (isset($_GET['classID'])) {
     if (checkTeacher($_GET['classID'], $mysqli)) {
         $query = "
             INSERT INTO assigned_texts
-            (text_id, class_id, creator_id, date_created)
-            VALUES (?,?,?,?)
+            (text_id, class_id, creator_id, date_created,assignment_due)
+            VALUES (?,?,?,?,?)
         ";
         if ($stmt = $mysqli->prepare($query)) {
             $now = time();
-            $stmt->bind_param("iiii", $_GET['textID'], $_GET['classID'], $_SESSION['user_id'], $now);
+			$day= substr("". $_GET['date']." ". $_GET['time'],0,2);
+			$month= substr("". $_GET['date']." ". $_GET['time'], 3, 2);
+			$year= substr("". $_GET['date']." ". $_GET['time'], 6, 4);
+			$timestamp =strtotime("". $year ."-".$month."-".$day." ".$_GET['time']);
+			$dt  =  date("Y-m-d H:i:s", $timestamp);
+            $stmt->bind_param("iiiis", $_GET['textID'], $_GET['classID'], $_SESSION['user_id'], $now, $dt);
             $stmt->execute();
-            header("Location: view_class.php?class_id=" . $_GET['classID']);
+			//echo $day;
+			//echo $month;
+			//echo $year;
+			echo $timestamp;
+			//echo $dt;
+			//echo $now;
+           // header("Location: view_class.php?class_id=" . $_GET['classID']);
         }
     } else {
         echo 'You are not the teacher';
