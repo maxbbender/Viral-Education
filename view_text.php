@@ -67,7 +67,24 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                 </div>
                             </div>
                         </div>
-
+						<div class="row panel callout">
+                      		<div style="display:none;" id="ttsLoading" class="small-12 columns text-center">
+                      			<object type="image/svg+xml" data="/img/loading.svg">
+								  Your browser does not support SVG
+								</object>
+                      		</div>
+                      		<div id="ttsAudioDiv" style="display:none;" class="small-8 columns small-centered">
+                      			<embed id="ttsAudio" src="" type="audio/ogg">
+                      		</div>
+                      		<div id="initalTTS">
+	                      		<div style ="vertical-align: middle;" class="small-8 columns text-center">
+                      				<h2 id="ttsText"></h2>
+                      			</div>
+                      			<div id="ttsClick" class="small-4 columns">
+                      				<img style="height:70px" src="/img/tts.png">
+                      			</div>
+                      		</div>
+                      	</div>
 						<div class="row panel callout">
                             <h3 class="subheader">Word Review</h3>
                             <br>
@@ -78,6 +95,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
                 <div id = "pictures" class="row ">
@@ -113,12 +131,38 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 		src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 	<script>
 	$(document).ready( function(){
+		var currentTTSWord = "";
         $('.picSlider').slick({
         	autoplay : true,
         	arrows : false,
         	slidesToShow: 2,
         	slidesToScroll: 1
         });
+
+        $('#ttsClick').click(function () {
+            $('#initalTTS').fadeOut(function() {
+                $('#ttsLoading').fadeIn(function() {
+                	$.ajax({
+                        type: "GET",
+                        url: "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize",
+                    	data: {voice : 'es-US_SofiaVoice', text : currentTTSWord},
+                        beforeSend: function (xhr) {
+                        	  xhr.setRequestHeader ("Authorization", "Basic " + btoa("0510c61c-0dc5-46fd-bb76-fe4ee4672772" + ":" + "msfDWxR0UIFO"));
+                        },
+                       	dataType: "binary",
+                       	processData: false,
+                       	success: function(result){
+                           	$('#ttsAudioDiv').empty();
+                           	$('#ttsAudioDiv').append('<embed src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
+                           	$('#ttsLoading').fadeOut(function() {
+                               	$('#
+                       		
+                  		}
+                	});
+                });
+            });
+        });
+                
         
         $(".clickable").unbind().click( function () {
             
@@ -133,7 +177,15 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     		
                 DefineElement(wordClicked);
     			getPhotos(wordClicked);
+
+    			// Populate the TTS field
+    			$('#ttsText').html(wordClicked);
+    			currentTTSWord = wordClicked;
+    			
             }
+
+
+         
         });
 
         /* Defines the element from all translation engines. This is where we do 
