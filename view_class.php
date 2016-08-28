@@ -365,7 +365,7 @@ if (isset($_GET['class_id'])) {
  
   
 
-<script>
+ <script>
 
 	
 $(document).ready(function () {
