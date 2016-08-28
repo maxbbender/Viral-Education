@@ -376,10 +376,11 @@ $(document).ready(function () {
 	});
 
 	$(function() {
+	$("#Assign_text")
 	
    $("#remove_button").click(function(){
 	   
-      if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+" Click Ok to confirm this action.")){
+      if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+". \n\nClick Ok to confirm this action.")){
          $("form#remove_form").submit();
 		  
 		 
