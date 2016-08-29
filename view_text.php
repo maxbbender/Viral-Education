@@ -78,7 +78,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                       		</div>
                       		<div id="initalTTS">
 	                      		<div style ="vertical-align: middle;" class="small-8 columns text-center">
-                      				<h2 id="ttsText"></h2>
+                      				<h3 id="ttsText"></h3>
                       			</div>
                       			<div id="ttsClick" class="small-4 columns">
                       				<img style="height:70px" src="/img/tts.png">
@@ -150,8 +150,11 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 
                 // Clean word
                 wordClicked = checkForHTMLTags(wordClicked);
+                alert("HTMLTAGS : " + wordClicked);
     			wordClicked = cleanWord(wordClicked);
+    			alert("cleanword : " + wordClicked);
     			wordClicked = wordClicked.toLowerCase();
+    			alert("lowercase : " + wordClicked);
     			
     		
                 DefineElement(wordClicked);
@@ -161,9 +164,9 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     			// Populate the TTS field
     			$('#ttsText').html(wordClicked);
     			
-    			if ($('#ttsInitial').css('display') == 'none') {
+    			if ($('#initalTTS').css('display') == 'none') {
     				$('#ttsAudioDiv').fadeOut(function() {
-            			$("ttsInitial").fadeIn();
+            			$("#initalTTS").fadeIn();
         			});
     			}
     			
@@ -177,7 +180,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 
         $('#ttsClick').click(function () {
             $('#initalTTS').fadeOut(function() {
-            	var xhr = new XMLHttpRequest({mozSystem: true});
+//             	var xhr = new XMLHttpRequest({mozSystem: true});
                 $('#ttsLoading').fadeIn(function() {
                 	$.ajax({
                         type: "GET",
@@ -189,7 +192,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 //                        	dataType: "binary",
 //                        	processData: true,
                        	success: function(result){
-                           	alert(result);
+//                            	alert(result);
                            	$('#ttsAudioDiv').empty();
                            	$('#ttsAudioDiv').append('<embed src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
                            	$('#ttsLoading').fadeOut(function() {
