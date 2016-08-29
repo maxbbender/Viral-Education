@@ -120,6 +120,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 	height: 500px;
 }
 </style>
+
 </head>
 <body>
 <?php include_once 'includes/main_nav.php'; ?> 
@@ -139,29 +140,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         	slidesToScroll: 1
         });
 
-        $('#ttsClick').click(function () {
-            $('#initalTTS').fadeOut(function() {
-                $('#ttsLoading').fadeIn(function() {
-                	$.ajax({
-                        type: "GET",
-                        url: "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize",
-                    	data: {voice : 'es-US_SofiaVoice', text : currentTTSWord},
-                        beforeSend: function (xhr) {
-                        	  xhr.setRequestHeader ("Authorization", "Basic " + btoa("0510c61c-0dc5-46fd-bb76-fe4ee4672772" + ":" + "msfDWxR0UIFO"));
-                        },
-                       	dataType: "binary",
-                       	processData: false,
-                       	success: function(result){
-                           	$('#ttsAudioDiv').empty();
-                           	$('#ttsAudioDiv').append('<embed src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
-                           	$('#ttsLoading').fadeOut(function() {
-                               	$('#
-                       		
-                  		}
-                	});
-                });
-            });
-        });
+        
                 
         
         $(".clickable").unbind().click( function () {
@@ -177,15 +156,50 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     		
                 DefineElement(wordClicked);
     			getPhotos(wordClicked);
-
+				currentTTSWord = wordClicked;
+				
     			// Populate the TTS field
     			$('#ttsText').html(wordClicked);
-    			currentTTSWord = wordClicked;
+    			
+    			if ($('#ttsInitial').css('display') == 'none') {
+    				$('#ttsAudioDiv').fadeOut(function() {
+            			$("ttsInitial").fadeIn();
+        			});
+    			}
+    			
+    			
     			
             }
 
 
          
+        });
+
+        $('#ttsClick').click(function () {
+            $('#initalTTS').fadeOut(function() {
+            	var xhr = new XMLHttpRequest({mozSystem: true});
+                $('#ttsLoading').fadeIn(function() {
+                	$.ajax({
+                        type: "GET",
+                        url: "/helpers/getTTSAudio.php",
+                    	data: {word : currentTTSWord},
+//                         beforeSend: function (xhr) {
+//                         	  xhr.setRequestHeader ("Authorization", "Basic " + btoa("0510c61c-0dc5-46fd-bb76-fe4ee4672772" + ":" + "msfDWxR0UIFO"));
+//                         },
+//                        	dataType: "binary",
+//                        	processData: true,
+                       	success: function(result){
+                           	alert(result);
+                           	$('#ttsAudioDiv').empty();
+                           	$('#ttsAudioDiv').append('<embed src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
+                           	$('#ttsLoading').fadeOut(function() {
+                               	$('#ttsAudioDiv').fadeIn();
+                           	});
+                       		
+                  		}
+                	});
+                });
+            });
         });
 
         /* Defines the element from all translation engines. This is where we do 
