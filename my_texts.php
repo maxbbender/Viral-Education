@@ -14,9 +14,17 @@ $texts = getCollection($_SESSION['user_id'], $mysqli);
 foreach ($texts as $text) {
     //$replacedText = str_replace("#", " ", $text);
     $explodedText = explode("#", $text);
-    $content .= '
-                <li>' . $explodedText[0] . ' - <a href="view_text.php?textID=' . $explodedText[1] . '">View Text</a></li>
-            ';
+//     $content .= '
+//                 <li>' . $explodedText[0] . ' - <a href="view_text.php?textID=' . $explodedText[1] . '">View Text</a></li>
+//             ';
+		$content .= '
+				<div id="textDivContainer" class="row">
+					<div id="textDiv' . $explodedText[1] . '" class="row">
+						<h3>Title : <span id="textDiv' . $explodedText[1] . 'title"></span></h3>
+					</div>
+				</div>
+				
+				'
 }
 
 ?>
