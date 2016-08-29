@@ -26,8 +26,9 @@
 	} else {
 		echo '<div class="row"><div class="small-8 columns small-centered">';
 		$reports = getReports($_SESSION['user_id'], $mysqli);
-		foreach ($reports as $report) {
-			echo '
+		if ($reports != false) {
+			foreach ($reports as $report) {
+				echo '
 				<div id ="report' . $report[0] . '" class="row panel">
 					<h3>Submitted by : ' . $report[4] . '<h3>
 					Content : ' . $report[1] . '
@@ -39,7 +40,11 @@
 					<a href="#" class="reportButton button radius" id ="reportButton' . $report[0] . '" value="Mark Done">Done</a>
 				</div><br>
 			';
+			}
+		} else {
+			echo '<div class="row text-center alert-box alert"><h1>No reports available</h1></div>';
 		}
+		
 		echo '</div></div>';
 	}
 	

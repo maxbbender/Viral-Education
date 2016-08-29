@@ -28,7 +28,7 @@ if (isset ( $_SESSION ['admin'] )) {
 			<li class="has-dropdown">
 				<a href="#">Administrator</a>
 				<ul class="dropdown">
-					<li><a href="view_reports.php">View Reports</li>
+					<li><a href="view_reports.php">View Reports</a></li>
 				</ul>
 			</li>
 		';
