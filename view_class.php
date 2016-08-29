@@ -49,12 +49,12 @@ if (isset($_GET['class_id'])) {
 						
                     </div>
                     <div class="small-4 columns">
-        				<input name="date" id="domislove2" type="text">
+        				<input name="date" id="dateTimePicker" type="text">
 					
 
 		
 		
-                        <input type="button" value="Assign Text" class="button radius tiny" id="assign_button">
+                        <input type="submit" value="Assign Text" class="button radius tiny" id="assign_button">
                     </div>
                     <input type="hidden" name="classID" value="' . $_GET['class_id'] . '">
                 </div><hr>
@@ -369,37 +369,22 @@ if (isset($_GET['class_id'])) {
 
 	
 $(document).ready(function () {
-	$('#domislove2').datetimepicker( {
+	var dt = new Date();
+	var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+	$('#dateTimePicker').datetimepicker( {
 		 datepicker: true,
-		 format:'Y-m-d H:i'
-
+		 format:'Y-m-d H:i',
+		 minDate:0,//yesterday is minimum date(for today use 0 or -1970/01/01)
 	});
 
-	$(function() {
 	
-	$("#assign_button").click(function(){
-	  			console.log('date='+$('#date_input').val());
-      if ($("#domislove2").val()>"<?php echo date('Y-m-d H:i:s')?>"||$("#date_input").val>= "0000-00-00 00:00:00"){
-		 alert("pass");
-         $("form#assign_form").submit();
-		   
-		 
-				}
-	else {
-		  alert("You can not assign a reading that is due before todays date.");
-	 }
-		})
    $("#remove_button").click(function(){
-	   
-      if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+". \n\nClick Ok to confirm this action.")){
-         $("form#remove_form").submit();
+		if (confirm("Are you sure you want to delete: "+ $( "#del_select option:selected" ).text()+". \n\nClick Ok to confirm this action.")){
+			$("form#remove_form").submit();
+		}
 		  
-		 
-				}
-		})
-	  
-		})
-   })
+	});
+});
 
 
 
