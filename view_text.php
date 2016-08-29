@@ -68,19 +68,31 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                             </div>
                         </div>
 						<div class="row panel callout">
+                      		<h3>Text to Speech (TTS)</h3>
                       		<div style="display:none;" id="ttsLoading" class="small-12 columns text-center">
                       			<object type="image/svg+xml" data="/img/loading.svg">
 								  Your browser does not support SVG
 								</object>
                       		</div>
-                      		<div id="ttsAudioDiv" style="display:none;" class="small-8 columns small-centered">
-                      			<embed id="ttsAudio" src="" type="audio/ogg">
+                      		<div id="ttsAudioOuterDiv" style="display:none;" class="small-12 columns small-centered text-center">
+                      			<div id ="ttsWordWithAudio" class="row">
+                      				<div class="small-12 columns text-center">
+                      					<strong><h3 id=""></h3></strong>
+                      				</div>
+                      			</div>
+                      			<div class="row">
+                      				<div class="small-12 columns">
+                      					<div id="ttsAudioDiv" style="display:none;" >
+                      						<embed id="ttsAudio" src="" type="audio/ogg">
+                      					</div>
+                      				</div>
+                      			</div>
                       		</div>
                       		<div id="initalTTS">
 	                      		<div style ="vertical-align: middle;" class="small-8 columns text-center">
-                      				<h3 id="ttsText"></h3>
+                      				<h3 style ="line-height: 70px; vertical-align: middle;" id="ttsText"></h3>
                       			</div>
-                      			<div id="ttsClick" class="small-4 columns">
+                      			<div style ="vertical-align: middle;" id="ttsClick" class="small-4 columns">
                       				<img style="height:70px" src="/img/tts.png">
                       			</div>
                       		</div>
@@ -150,12 +162,8 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 
                 // Clean word
                 wordClicked = checkForHTMLTags(wordClicked);
-                alert("HTMLTAGS : " + wordClicked);
     			wordClicked = cleanWord(wordClicked);
-    			alert("cleanword : " + wordClicked);
     			wordClicked = wordClicked.toLowerCase();
-    			alert("lowercase : " + wordClicked);
-    			
     		
                 DefineElement(wordClicked);
     			getPhotos(wordClicked);
@@ -165,44 +173,39 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     			$('#ttsText').html(wordClicked);
     			
     			if ($('#initalTTS').css('display') == 'none') {
-    				$('#ttsAudioDiv').fadeOut(function() {
-            			$("#initalTTS").fadeIn();
+    				$('#ttsAudioDiv').fadeOut();
+        			$('#ttsWordWithAudio').fadeOut(function() {
+        				$("#initalTTS").fadeIn();
         			});
     			}
-    			
-    			
-    			
             }
-
-
-         
         });
 
         $('#ttsClick').click(function () {
-            $('#initalTTS').fadeOut(function() {
-//             	var xhr = new XMLHttpRequest({mozSystem: true});
-                $('#ttsLoading').fadeIn(function() {
-                	$.ajax({
-                        type: "GET",
-                        url: "/helpers/getTTSAudio.php",
-                    	data: {word : currentTTSWord},
-//                         beforeSend: function (xhr) {
-//                         	  xhr.setRequestHeader ("Authorization", "Basic " + btoa("0510c61c-0dc5-46fd-bb76-fe4ee4672772" + ":" + "msfDWxR0UIFO"));
-//                         },
-//                        	dataType: "binary",
-//                        	processData: true,
-                       	success: function(result){
-//                            	alert(result);
-                           	$('#ttsAudioDiv').empty();
-                           	$('#ttsAudioDiv').append('<embed src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
-                           	$('#ttsLoading').fadeOut(function() {
-                               	$('#ttsAudioDiv').fadeIn();
-                           	});
-                       		
-                  		}
-                	});
+            if (currentTTSWord != "") {
+            	$('#initalTTS').fadeOut(function() {
+                    $('#ttsLoading').fadeIn(function() {
+                    	$.ajax({
+                            type: "GET",
+                            url: "/helpers/getTTSAudio.php",
+                        	data: {word : currentTTSWord},
+                           	success: function(result){
+                               	$('#ttsAudioDiv').empty();
+                               	$('#ttsAudioDiv').append('<embed style="max-height:40px;" src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
+                               	$('#ttsWordWithAudio h3').html(currentTTSWord);	
+                               	$('#ttsLoading').fadeOut(function() {
+                                   	$('#ttsAudioDiv').fadeIn();
+                                	$('#ttsAudioOuterDiv').fadeIn();
+                                	$('#ttsWordWithAudio').fadeIn();
+                                   	
+                               	});
+                           		
+                      		}
+                    	});
+                    });
                 });
-            });
+            } 
+            
         });
 
         /* Defines the element from all translation engines. This is where we do 
@@ -321,7 +324,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         }
 
         function cleanWord(stringToClean) {
-            var re = /\W*(\w+)\W*/; 
+            var re = /\W*([\wραινσϊό]+)\W*/ ; 
             var m;
              
             if ((m = re.exec(stringToClean)) !== null) {

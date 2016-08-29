@@ -4,7 +4,7 @@
 		$curl = curl_init();
 		
 		curl_setopt_array($curl, array(
-				CURLOPT_URL => "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?text=" . $_GET['word'] . "&voice=es-US_SofiaVoice",
+				CURLOPT_URL => "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?text=" . $_GET['word'] . "&voice=es-ES_EnriqueVoice",
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING => "",
 				CURLOPT_MAXREDIRS => 10,
