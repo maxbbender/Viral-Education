@@ -63,7 +63,7 @@ if (isset($_GET['type'])) {
                                             <dd class="accordion-navigation">
                                                 <a href="#panel' . $textID . '">' . $textTitle . '</a>
                                                 <div id="panel' . $textID . '" class="content active">
-                                                    <h3 class="subheader"><a href="view_text?textID= ' . $textID . '">View Text</a></h3>
+                                                    <h3 class="subheader"><a href="view_text.php?textID= ' . $textID . '">View Text</a></h3>
                                                     <table>
                                                         <thead>
                                                             <tr>
