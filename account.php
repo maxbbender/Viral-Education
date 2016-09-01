@@ -142,10 +142,11 @@ if (isset($_GET['pwerror'])) {
             <div class="large-12 columns">
                 <label for="Currentpassword">Current Password
                     <small>required</small>
-                    <input type="password" id="Currentpassword" placeholder="Current Password" name="currentPassword"
-                           required="" pattern="alpha_numeric">
+                    <input type="password" id="Currentpassword" placeholder="Current Password" name="currentPassword" pattern="valid_password" required>
                 </label>
-                <small class="error">Passwords must contain only letters and numbers.</small>
+                <small class="error">Passwords must contain at least one upper case letter, one lower case letter
+                        and one number
+                    </small>
             </div>
         </div>
         <div class="row">
@@ -153,9 +154,11 @@ if (isset($_GET['pwerror'])) {
                 <label for="Newpassword">New Password
                     <small>required</small>
                     <input type="password" id="NewPassword" placeholder="New Password" name="newPassword" required=""
-                           pattern="alpha_numeric">
+                           pattern="valid_password">
                 </label>
-                <small class="error">Passwords must contain only letters and numbers.</small>
+                <small class="error">Passwords must contain at least one upper case letter, one lower case letter
+                        and one number
+                    </small>
             </div>
         </div>
         <div class="row">
