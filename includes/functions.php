@@ -599,7 +599,8 @@ function getPhotos($word, $mysqli) {
 			return false;
 		}
 	} else {
-		echo "ERROR";
+		echo "ERROR : " . $stmt->error;
+		error_log("getPhotos SQL Error : " . $mysqli->error);
 	}
 }
 
@@ -747,3 +748,25 @@ function isAMemberofClass($userID, $classID, $mysqli) {
 		echo "SQL Error : " . $stmt->error;
 	}
 }
+
+function isEmailAlreadyTaken($email, $mysqli) {
+	$query = '
+                SELECT id
+                FROM members
+                WHERE email = ?
+                        ';
+        if ($stmt = $mysqli->prepare($query)){
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $stmt->bind_result($id);
+                $stmt->store_result();
+                if ($stmt->num_rows > 0){
+                        return true;
+                } else {
+                        return false;
+                }
+        } else {
+                echo "SQL Error : " . $stmt->error;
+        }
+}
+

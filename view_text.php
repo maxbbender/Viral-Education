@@ -35,7 +35,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 			$re = "/(<p[^>]*>)(.*)(<\\/p>)/";
 			preg_match_all($re, $content, $matches);
 			
-			for ($i = 0; $i <= count($matches[1]); $i++) {
+			for ($i = 0; $i < count($matches[1]); $i++) {
 				$spannedWords = $spannedWords . $matches[1][$i];
 				$explodedContent = explode (" ", $matches[2][$i] );
 				foreach ( $explodedContent as $word ) {
