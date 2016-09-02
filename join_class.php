@@ -8,6 +8,7 @@
 $error = $inviteID = "";
 session_start();
 include_once 'includes/db_connect.php';
+require 'includes/functions.php';
 $classExists = FALSE;
 if (isset($_POST['inviteID'])) {
     $inviteID = $_POST['inviteID'];
