@@ -32,11 +32,16 @@ if (isset($_POST['inviteID'])) {
         VALUES (?,?)
     ";
     if ($classExists) {
-        if ($stmt = $mysqli->prepare($query)) {
-            $stmt->bind_param("ii", $classID, $_SESSION['user_id']);
-            $stmt->execute();
-            header("Location: my_classes.php");
-        }
+    	if (!isAMemberofClass($_SESSION['user_id'], $classID, $mysqli)) {
+    		if ($stmt = $mysqli->prepare($query)) {
+    			$stmt->bind_param("ii", $classID, $_SESSION['user_id']);
+    			$stmt->execute();
+    			header("Location: my_classes.php");
+    		}
+    	} else {
+    		$error = '<div data-alert class="alert-box alert">You are already a member of this class!<a href="#" class="close">&times;</a></div>';
+    	}
+       
     } else {
         $error = '<div data-alert class="alert-box alert">The class you have tried to join does not exist. Please check invite code.<a href="#" class="close">&times;</a></div>';
     }

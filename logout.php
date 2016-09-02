@@ -18,5 +18,6 @@ setcookie(session_name(),
 
 // Destroy session
 session_destroy();
-echo '<script type="text/javascript">location.replace("http://viraleducation.com/index.php");</script>';
+// echo '<script type="text/javascript">location.replace("http://viraleducation.com/index.php");</script>';
 ?>
+<meta http-equiv="refresh" content="0;URL=index.php" />
