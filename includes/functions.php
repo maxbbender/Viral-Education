@@ -731,12 +731,12 @@ function isAMemberofClass($userID, $classID, $mysqli) {
 	$query = '
 		SELECT id
 		FROM class_members
-		WHERE class_id = ? AND user_id ?
+		WHERE class_id = ? AND user_id = ?
 			';
 	if ($stmt = $mysqli->prepare($query)){
 		$stmt->bind_param("ii", $classID, $userID);
 		$stmt->execute();
-		$stmt->bind_result($username, $fname, $lname);
+		$stmt->bind_result($id);
 		$stmt->store_result();
 		if ($stmt->num_rows > 0){
 			return true;
