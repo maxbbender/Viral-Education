@@ -1,5 +1,5 @@
 <?php
-header ( "Access-Control-Allow-Origin: *" );
+header('Content-Type: text/html; charset=UTF-8');
 session_start ();
 include_once 'includes/db_connect.php';
 include_once 'includes/functions.php';
@@ -127,6 +127,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
     <?php include_once 'includes/css_links.php'; ?>
     <link rel="stylesheet" type="text/css"
 	href="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css" />
+	<meta charset="utf-8"/> 
 <style>
 #pictures {
 	height: 500px;
@@ -324,7 +325,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         }
 
         function cleanWord(stringToClean) {
-            var re = /\W*([\wραινσϊό]+)\W*/ ; 
+            var re = /\W*([\wΓ±Γ‘Γ©Γ­Γ³ΓΊΓΌ]+)\W*/ ; 
             var m;
              
             if ((m = re.exec(stringToClean)) !== null) {
