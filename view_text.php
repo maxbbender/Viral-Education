@@ -188,6 +188,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                     	$.ajax({
                             type: "GET",
                             url: "/helpers/getTTSAudio.php",
+                            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         	data: {word : currentTTSWord},
                            	success: function(result){
                                	$('#ttsAudioDiv').empty();
