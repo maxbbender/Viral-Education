@@ -1,10 +1,16 @@
 <?php
-	header('Content-Type: application/json');
+	header('Content-Type: application/json; charset=utf-8');
+// 	header('Content-Type: audio/ogg; charset=utf-8');
+// 	header('Content-Type: text/html; charset=utf-8');
 	if (isset($_GET['word'])) {
 		$curl = curl_init();
 		
+		$word = $_GET['word'];
+		
+		$url = "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?text=" . utf8_decode($word) . "&voice=es-ES_EnriqueVoice";
+// 		echo '<br>URL : ' . $url;
 		curl_setopt_array($curl, array(
-				CURLOPT_URL => "https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?text=" . $_GET['word'] . "&voice=es-ES_EnriqueVoice",
+				CURLOPT_URL => $url,
 				CURLOPT_RETURNTRANSFER => true,
 				CURLOPT_ENCODING => "",
 				CURLOPT_MAXREDIRS => 10,
@@ -29,6 +35,8 @@
 		} else {
 // 			echo '<embed src="data:audio/ogg;base64,'. base64_encode($response) .'" type="audio/ogg">';
 			echo json_encode(base64_encode($response));
+// 			echo json_encode($response);
+// 			echo base64_encode($response);
 		}
 	}
 
