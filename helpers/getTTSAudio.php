@@ -1,5 +1,6 @@
 <?php
 	header('Content-Type: application/json; charset=utf-8');
+// 	header('Content-Type: audio/ogg; charset=utf-8');
 // 	header('Content-Type: text/html; charset=utf-8');
 	if (isset($_GET['word'])) {
 		$curl = curl_init();
@@ -34,6 +35,8 @@
 		} else {
 // 			echo '<embed src="data:audio/ogg;base64,'. base64_encode($response) .'" type="audio/ogg">';
 			echo json_encode(base64_encode($response));
+// 			echo json_encode($response);
+// 			echo base64_encode($response);
 		}
 	}
 

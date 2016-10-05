@@ -75,7 +75,7 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 								</object>
                       		</div>
                       		<div id="ttsAudioOuterDiv" style="display:none;" class="small-12 columns small-centered text-center">
-                      			<div id ="ttsWordWithAudio" class="row">
+                      			<div id="ttsWordWithAudio" class="row">
                       				<div class="small-12 columns text-center">
                       					<strong><h3 id=""></h3></strong>
                       				</div>
@@ -83,7 +83,8 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                       			<div class="row">
                       				<div class="small-12 columns">
                       					<div id="ttsAudioDiv" style="display:none;" >
-                      						<embed id="ttsAudio" src="" type="audio/ogg">
+                      						<audio style="display:none;" id="ttsAudio" src=""></audio>
+                      						<img style="max-height:50px;" id="playAudio" src="img/play.png">
                       					</div>
                       				</div>
                       			</div>
@@ -143,6 +144,13 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
 <script type="text/javascript"
 		src="//cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js"></script>
 	<script>
+	var isChromium = window.chrome,
+    	winNav = window.navigator,
+    	vendorName = winNav.vendor,
+    	isOpera = winNav.userAgent.indexOf("OPR") > -1,
+    	isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+   		isIOSChrome = winNav.userAgent.match("CriOS");
+    
 	$(document).ready( function(){
 		var currentTTSWord = "";
         $('.picSlider').slick({
@@ -152,7 +160,14 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
         	slidesToScroll: 1
         });
 
-        
+        $("#playAudio").click(function() {
+            var audioElement = document.getElementById("ttsAudio");
+            audioElement.play();
+        	
+//         	if ($('#audio').paused != true) {
+                
+//             }
+        });
                 
         
         $(".clickable").unbind().click( function () {
@@ -191,15 +206,29 @@ if (isset ( $_GET ['textID'] )) { // is the textID set in the HTTP GET header
                             contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                         	data: {word : currentTTSWord},
                            	success: function(result){
-                               	$('#ttsAudioDiv').empty();
-                               	$('#ttsAudioDiv').append('<embed style="max-height:40px;" src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
+                               	$('#ttsAudio').attr("src","data:audio/ogg;base64," + result);
                                	$('#ttsWordWithAudio h3').html(currentTTSWord);	
                                	$('#ttsLoading').fadeOut(function() {
-                                   	$('#ttsAudioDiv').fadeIn();
-                                	$('#ttsAudioOuterDiv').fadeIn();
-                                	$('#ttsWordWithAudio').fadeIn();
-                                   	
+                               		$('#ttsAudioDiv').fadeIn();
+	                            	$('#ttsAudioOuterDiv').fadeIn();
+	                            	$('#ttsWordWithAudio').fadeIn();
                                	});
+//                                	$('#ttsAudioDiv').html('');
+//                                	if (isChromium) {
+//                                		$('#ttsAudioDiv').append('<embed id="audio" style="max-height:40px;" src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
+// //                                		var someVar = $('#audio html'
+// //                                		$('#audio html body').css("padding-top", "30px");
+//                                	} else {
+//                                		$('#ttsAudioDiv').append('<embed id="audio" style="max-height:40px;" src="data:audio/ogg;base64,' + result + '" type="audio/ogg">');
+//                                	}
+                                   
+//                                	$('#ttsWordWithAudio h3').html(currentTTSWord);	
+//                                	$('#ttsLoading').fadeOut(function() {
+//                                    	$('#ttsAudioDiv').fadeIn();
+//                                 	$('#ttsAudioOuterDiv').fadeIn();
+//                                 	$('#ttsWordWithAudio').fadeIn();
+                                   	
+//                                	});
                            		
                       		}
                     	});
