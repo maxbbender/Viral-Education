@@ -58,7 +58,7 @@ session_start();
                 ';
             }
         ?>
-        <form action="includes/register2.inc.php" method="post" id="registration_form" data-abide>
+        <form action="includes/register.inc.php" method="post" id="registration_form" data-abide>
             <div class="row">
                 <div class="small-6 columns">
                     <div class="row">
@@ -130,21 +130,13 @@ session_start();
                 </div>
             </div>
             <div class="row">
-                <?php
-                  require_once('includes/recaptchalib.php');
-                  $publickey = "6LdbCgoUAAAAAKYt0kYWEGkaHYrQQqZML1f787d5"; // you got this from the signup page
-                  echo recaptcha_get_html($publickey);
-                ?>
-                <!-- <div class="g-recaptcha" data-sitekey="6LdbCgoUAAAAAKYt0kYWEGkaHYrQQqZML1f787d5">
-                    
-                </div> -->
-                <!-- <div class="small-6 columns">
+                <div class="small-6 columns">
                     <label>Captcha confirm (Anti Spam Bots)
                     <img id="captcha" src="/securimage/securimage_show.php" alt="CAPTCHA Image" /><br>
                         <input type="text" name="captcha_code" size="10" maxlength="6" />
                     </label>
                     <a href="#" onclick="document.getElementById('captcha').src = '/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a>
-                </div> -->
+                </div>
             </div>
             <div class="row">
                 <div class="small-12 columns small-centered">

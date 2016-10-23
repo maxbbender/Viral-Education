@@ -2,35 +2,11 @@
 include_once 'db_connect.php';
 include_once 'psl-config.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/securimage/securimage.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/includes/recaptchalib.php';
 
-// $securimage = new Securimage();
+$securimage = new Securimage();
 $error_msg = 0;
 
-
-
-if (isset($_POST['username'], 
-          $_POST['email'], 
-          $_POST['password'], 
-          $_POST['fname'], 
-          $_POST['lname'])) {
-
-       
-        $privatekey = "6LdbCgoUAAAAABcYymj6TZa8NCZNums1MIW2B3da";
-        $resp = recaptcha_check_answer ($privatekey,
-                                        $_SERVER["REMOTE_ADDR"],
-                                        $_POST["recaptcha_challenge_field"],
-                                        $_POST["recaptcha_response_field"]);
-
-        if (!$resp->is_valid) {
-        // What happens when the CAPTCHA was entered incorrectly
-            $error_msg = 5;
-        } else {
-        // Your code here to handle a successful verification
-        }
-
-    // Let's check if Captcha is correct
-
+if (isset($_POST['username'], $_POST['email'], $_POST['password'], $_POST['fname'], $_POST['lname'], $_POST['captcha_code'])) {
     // Sanitize and validate the data passed in
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
@@ -83,11 +59,11 @@ if (isset($_POST['username'],
         $stmt->close();
     }
 
-    // //Check captcha code and make sure it was correct
-    // if ($securimage->check($_POST['captcha_code']) == false){
-    //     //code is incorrect
-    //     $error_msg = 5;
-    // }
+    //Check captcha code and make sure it was correct
+    if ($securimage->check($_POST['captcha_code']) == false){
+        //code is incorrect
+        $error_msg = 5;
+    }
     // TODO: 
     // We'll also have to account for the situation where the user doesn't have
     // rights to do registration, by checking what type of user is attempting to
